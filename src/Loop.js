@@ -13,13 +13,8 @@ Loop = function () {
 };
 
 Loop.prototype.play = function () {
-    var self = this;
-
     this.playing = true;
-
-    requestAnimFrame(function () {
-        self.next();
-    });
+    this.next();
 };
 
 Loop.prototype.stop = function () {

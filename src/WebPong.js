@@ -15,7 +15,6 @@ WebPong = function (wrapper) {
     this.stage = new pixi.Stage(0x333333);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
-    this.decorate();
 
     this.players = {
         a: new Player(this, {
@@ -29,6 +28,7 @@ WebPong = function (wrapper) {
     };
 
     this.resize();
+    this.drawLines();
 
     this.loop.use(function () {
         self.update();
@@ -51,10 +51,6 @@ WebPong.prototype.update = function () {
             this.players[player].update();
         }
     }
-
-    requestAnimFrame(function () {
-        self.update();
-    });
 };
 
 WebPong.prototype.resize = function () {
@@ -70,8 +66,21 @@ WebPong.prototype.resize = function () {
     }
 };
 
-WebPong.prototype.decorate = function () {
-    var verticalLine = new pixi.Graphics();
+WebPong.prototype.drawLines = function () {
+    var positions = [
+            10,
+            this.renderer.width / 2,
+            this.renderer.width - 10
+        ],
+        lines = new pixi.Graphics();
+
+    this.stage.addChild(lines);
+
+    for (var i = 0; i < positions.length; i += 1) {
+        lines.beginFill(0xFFFFFF, 1);
+        lines.drawRect(positions[i], 0, 1, this.renderer.height);
+        lines.endFill();
+    }
 };
 
 module.exports = WebPong;

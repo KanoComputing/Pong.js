@@ -60,8 +60,7 @@ Player.prototype.update = function () {
 };
 
 Player.prototype.move = function (direction) {
-    var now = new Date().getTime(),
-        elapsed = now - this.lastUpdate,
+    var elapsed = new Date().getTime() - this.lastUpdate,
         distance = (elapsed / 1000) * this.speed,
         stageHeight = this.game.renderer.height,
         newY;
