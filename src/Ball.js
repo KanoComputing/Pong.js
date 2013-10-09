@@ -6,7 +6,7 @@ var pixi = require('pixi'),
     Ball,
     defaults = {
         speed: 300,
-        angle: Math.random() * 360,
+        angle: Math.random() * 90 - 45,
         size: 10
     };
 

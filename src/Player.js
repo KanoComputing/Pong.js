@@ -3,18 +3,18 @@
 'use strict';
 
 var pixi = require('pixi'),
+    config = require('./config'),
     Keyboard = require('./Keyboard'),
     Player,
     defaults = {
-        barWidth: 10,
+        barWidth: config.barsWidth,
         barHeight: 100,
         controls: {
             'up': null,
             'down': null
         },
         speed: 300
-    },
-    paddingX = 20;
+    };
 
 Player = function (game, options) {
     this.game = game;
@@ -77,13 +77,17 @@ Player.prototype.move = function (direction) {
 };
 
 Player.prototype.updateX = function () {
-    var stageWidth = this.game.renderer.width;
+    var stageWidth = this.game.renderer.width,
+        spacing = config.linesDistance + config.playerMargin,
+        x;
 
     if (this.side === 'left') {
-        this.graphics.position.x = paddingX;
+        x = spacing;
     } else {
-        this.graphics.position.x = stageWidth - paddingX - this.width;
+        x = stageWidth - spacing - this.width;
     }
+
+    this.graphics.position.x = x;
 };
 
 module.exports = Player;

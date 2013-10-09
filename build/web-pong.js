@@ -699,7 +699,7 @@ var pixi = require('pixi'),
     Ball,
     defaults = {
         speed: 300,
-        angle: Math.random() * 360,
+        angle: Math.random() * 90 - 45,
         size: 10
     };
 
@@ -879,24 +879,24 @@ Loop.prototype.getFPS = function () {
 
 module.exports = Loop;
 
-},{"./utils/requestAnimFrame":54}],51:[function(require,module,exports){
+},{"./utils/requestAnimFrame":55}],51:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
 
 var pixi = require('pixi'),
+    config = require('./config'),
     Keyboard = require('./Keyboard'),
     Player,
     defaults = {
-        barWidth: 10,
+        barWidth: config.barsWidth,
         barHeight: 100,
         controls: {
             'up': null,
             'down': null
         },
         speed: 300
-    },
-    paddingX = 20;
+    };
 
 Player = function (game, options) {
     this.game = game;
@@ -959,18 +959,22 @@ Player.prototype.move = function (direction) {
 };
 
 Player.prototype.updateX = function () {
-    var stageWidth = this.game.renderer.width;
+    var stageWidth = this.game.renderer.width,
+        spacing = config.linesDistance + config.playerMargin,
+        x;
 
     if (this.side === 'left') {
-        this.graphics.position.x = paddingX;
+        x = spacing;
     } else {
-        this.graphics.position.x = stageWidth - paddingX - this.width;
+        x = stageWidth - spacing - this.width;
     }
+
+    this.graphics.position.x = x;
 };
 
 module.exports = Player;
 
-},{"./Keyboard":49,"pixi":23}],52:[function(require,module,exports){
+},{"./Keyboard":49,"./config":53,"pixi":23}],52:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -979,6 +983,7 @@ var pixi = require('pixi'),
     Loop = require('./Loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
+    config = require('./config'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -1043,9 +1048,9 @@ WebPong.prototype.resize = function () {
 
 WebPong.prototype.drawLines = function () {
     var positions = [
-            10,
+            config.linesDistance,
             this.renderer.width / 2,
-            this.renderer.width - 10
+            this.renderer.width - config.linesDistance
         ],
         lines = new pixi.Graphics();
 
@@ -1060,12 +1065,22 @@ WebPong.prototype.drawLines = function () {
 
 module.exports = WebPong;
 
-},{"./Ball":48,"./Loop":50,"./Player":51,"pixi":23}],53:[function(require,module,exports){
+},{"./Ball":48,"./Loop":50,"./Player":51,"./config":53,"pixi":23}],53:[function(require,module,exports){
+/* global module */
+
+'use strict';
+
+module.exports = {
+	barsWidth: 15,
+	linesDistance: 20,
+	playerMargin: 10
+};
+},{}],54:[function(require,module,exports){
 /* global require */
 
 window.WebPong = require('./WebPong');
 
-},{"./WebPong":52}],54:[function(require,module,exports){
+},{"./WebPong":52}],55:[function(require,module,exports){
 /* global module */
 
 'use strict';
@@ -1080,5 +1095,5 @@ module.exports =
         window.setTimeout(callback, 1000 / 60);
     };
 
-},{}]},{},[53])
+},{}]},{},[54])
 ;

@@ -6,6 +6,7 @@ var pixi = require('pixi'),
     Loop = require('./Loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
+    config = require('./config'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -70,9 +71,9 @@ WebPong.prototype.resize = function () {
 
 WebPong.prototype.drawLines = function () {
     var positions = [
-            10,
+            config.linesDistance,
             this.renderer.width / 2,
-            this.renderer.width - 10
+            this.renderer.width - config.linesDistance
         ],
         lines = new pixi.Graphics();
 
