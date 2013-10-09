@@ -3,7 +3,6 @@
 'use strict';
 
 var pixi = require('pixi'),
-    requestAnimFrame = require('./utils/requestAnimFrame'),
     Loop = require('./Loop'),
     Player = require('./Player'),
     WebPong;

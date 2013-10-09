@@ -918,7 +918,6 @@ module.exports = Player;
 'use strict';
 
 var pixi = require('pixi'),
-    requestAnimFrame = require('./utils/requestAnimFrame'),
     Loop = require('./Loop'),
     Player = require('./Player'),
     WebPong;
@@ -998,7 +997,7 @@ WebPong.prototype.drawLines = function () {
 
 module.exports = WebPong;
 
-},{"./Loop":49,"./Player":50,"./utils/requestAnimFrame":53,"pixi":23}],52:[function(require,module,exports){
+},{"./Loop":49,"./Player":50,"pixi":23}],52:[function(require,module,exports){
 /* global require */
 
 window.WebPong = require('./WebPong');
