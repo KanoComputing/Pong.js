@@ -8,6 +8,8 @@
 	<style type="text/css">
 		body {
 			margin: 0;
+			padding: 0;
+			overflow: hidden;
 		}
 
 		#pong {
@@ -19,16 +21,18 @@
 		}
 	</style>
 
+	<script type="text/javascript">
+		window.onload = function () {
+			new WebPong(document.getElementById('pong')).start();
+		};
+	</script>
+
 </head>
 <body>
 
 <div id="pong">
 	
 </div>
-
-<script type="text/javascript">
-	new WebPong(document.getElementById('pong')).start();
-</script>
 
 </body>
 </html>
