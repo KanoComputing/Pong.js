@@ -5,6 +5,7 @@
 var pixi = require('pixi'),
     Loop = require('./Loop'),
     Player = require('./Player'),
+    Ball = require('./Ball'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -25,6 +26,8 @@ WebPong = function (wrapper) {
             controls: { up: 'w', down: 's' }
         })
     };
+
+    this.ball = new Ball(this);
 
     this.resize();
     this.drawLines();
@@ -48,6 +51,8 @@ WebPong.prototype.update = function () {
             this.players[player].update();
         }
     }
+
+    this.ball.update();
 };
 
 WebPong.prototype.resize = function () {

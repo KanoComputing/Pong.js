@@ -30,23 +30,23 @@ Player = function (game, options) {
         this.side = 'left';
     }
 
-    this.bar = new pixi.Graphics();
-    this.game.stage.addChild(this.bar);
+    this.graphics = new pixi.Graphics();
+    this.game.stage.addChild(this.graphics);
 
     this.render();
     this.updateX();
 };
 
 Player.prototype.render = function () {
-    this.bar.beginFill(0xFFFFFF, 1);
-    this.bar.drawRect(0, 0, this.width, this.height);
-    this.bar.endFill();
+    this.graphics.beginFill(0xFFFFFF, 1);
+    this.graphics.drawRect(0, 0, this.width, this.height);
+    this.graphics.endFill();
 };
 
 Player.prototype.update = function () {
     var centerY = this.game.renderer.height / 2;
 
-    this.bar.position.y = centerY - this.height / 2 + this.y;
+    this.graphics.position.y = centerY - this.height / 2 + this.y;
 
     if (this.keyboard.pressed.up) {
         this.move(-1);
@@ -80,9 +80,9 @@ Player.prototype.updateX = function () {
     var stageWidth = this.game.renderer.width;
 
     if (this.side === 'left') {
-        this.bar.position.x = paddingX;
+        this.graphics.position.x = paddingX;
     } else {
-        this.bar.position.x = stageWidth - paddingX - this.width;
+        this.graphics.position.x = stageWidth - paddingX - this.width;
     }
 };
 
