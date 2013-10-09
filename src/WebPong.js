@@ -3,7 +3,7 @@
 'use strict';
 
 var pixi = require('pixi'),
-    Loop = require('./Loop'),
+    Loop = require('game-loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
     config = require('./config'),
