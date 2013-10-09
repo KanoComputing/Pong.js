@@ -42,8 +42,6 @@ WebPong.prototype.start = function () {
 };
 
 WebPong.prototype.update = function () {
-    var self = this;
-
     this.renderer.render(this.stage);
 
     for (var player in this.players) {
