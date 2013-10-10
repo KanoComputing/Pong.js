@@ -1,22 +1,7 @@
 
-# Global Dependencies
+# Usage
 
-* Browserify `npm install -g browserify`
-* Watchify `npm install -g watchify`
-
-### Install
-
-`npm install`
-
-### Build
-
-`npm run build`
-
-### Build
-
-`npm run watch`
-
-### Simple Usage
+### Simple Example Usage
 
 ```javascript
 
@@ -40,7 +25,7 @@ pong.events.on('update', function () {
 });
 ```
 
-# With Browserify
+### Browserify Example Usage
 
 #### Installation
 
@@ -70,9 +55,32 @@ pong.events.on('update', function () {
 
 ```
 
-## Pong
+# Development
 
+## Global Dependencies
 
+* Browserify `npm install -g browserify`
+* Watchify `npm install -g watchify`
+
+### Install
+
+```
+git clone git@github.com:KanoComputing/Pong.js.git
+cd Pong.js
+npm install
+```
+
+### Build
+
+`npm run build`
+
+### Watch
+
+`npm run watch`
+
+# Docs
+
+## Pong class
 
 #### Methods
 
@@ -97,7 +105,7 @@ pong.events.on('update', function () {
 * `balls` - Array containing Ball objects
 * `loop` - GameLoop object
 
-## Player
+## Player class
 
 #### Methods
 
@@ -121,7 +129,7 @@ pong.events.on('update', function () {
 * `score` - Player score
 * `color` - Octal color string
 
-## Ball
+## Ball class
 
 #### Methods
 
