@@ -31,6 +31,8 @@ pong.events.on('update', function () {
 
 `npm install pong.js`
 
+#### Example
+
 ```javascript
 
 var pong = require('pong.js');
