@@ -6,11 +6,15 @@ body, html {
 
 body {
 	min-height: 100%;
-	background: #222;
+	background: #eee;
 	color: #666;
 	text-align: center;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
+}
+
+body.demo {
+	overflow: hidden;
 }
 
 #pong {
@@ -19,5 +23,41 @@ body {
 }
 
 .panel {
-	margin-top: 14px;
+	padding-top: 14px;
+	background: #191919;
+	height: 30px;
+	position: relative;
+}
+
+.page {
+	max-width: 940px;
+	margin: 20px auto;
+	background: #f5f5f5;
+	padding: 20px;
+}
+
+h2 {
+	font-size: 24px;
+}
+
+.page ul {
+	width: 300px;
+	margin: auto;
+	text-align: left;
+}
+
+.page ul li a {
+	color: #555;
+	font-size: 18px;
+}
+
+a {
+	color: #eee;
+	text-decoration: none;
+}
+
+a.back {
+	position: absolute;
+	top: 14px;
+	left: 15px;
 }

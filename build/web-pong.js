@@ -2644,13 +2644,14 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     EventEmitter = require('event-emitter'),
+    config = require('./config'),
     WebPong;
 
 WebPong = function (wrapper) {
     var self = this;
 
     this.wrapper = wrapper;
-    this.stage = new pixi.Stage(0x333333);
+    this.stage = new pixi.Stage(config.BG_COLOR);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
     this.balls = [];
@@ -2744,12 +2745,13 @@ WebPong.prototype.setLinesColor = function (color) {
 
 module.exports = WebPong;
 
-},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":80,"event-emitter":5,"game-loop":25,"pixi":50}],82:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":80,"./config":82,"event-emitter":5,"game-loop":25,"pixi":50}],82:[function(require,module,exports){
 /* global module */
 
 'use strict';
 
 module.exports = {
+	BG_COLOR: 0x222222,
 	BARS_WIDTH: 15,
 	LINES_DISTANCE: 20,
 	PLAYER_MARGIN: 10,

@@ -9,13 +9,14 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     EventEmitter = require('event-emitter'),
+    config = require('./config'),
     WebPong;
 
 WebPong = function (wrapper) {
     var self = this;
 
     this.wrapper = wrapper;
-    this.stage = new pixi.Stage(0x333333);
+    this.stage = new pixi.Stage(config.BG_COLOR);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
     this.balls = [];
