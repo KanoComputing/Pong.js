@@ -9,6 +9,15 @@ var pixi = require('pixi'),
 ScoreDisplay = function (player) {
     this.player = player;
     this.render();
+    this.bind();
+};
+
+ScoreDisplay.prototype.bind = function () {
+    var self = this;
+
+    this.player.events.on('point', function () {
+        self.update();
+    });
 };
 
 ScoreDisplay.prototype.render = function () {

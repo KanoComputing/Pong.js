@@ -7,6 +7,7 @@ var pixi = require('pixi'),
     Keyboard = require('./Keyboard'),
     ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
+    EventEmitter = require('event-emitter'),
     defaults = {
         barHeight: 100,
         controls: {
@@ -27,6 +28,7 @@ Player = function (game, options) {
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
     this.score = 0;
+    this.events = new EventEmitter();
     this.scoreDisplay = new ScoreDisplay(this);
 
     if (options.side !== 'left' && options.side !== 'right') {
@@ -138,7 +140,17 @@ Player.prototype.reset = function () {
 
 Player.prototype.addPoint = function () {
     this.score += 1;
-    this.scoreDisplay.update();
+    this.events.emit('point', [ this.score ]);
+};
+
+Player.prototype.refresh = function () {
+    this.graphics.clear();
+    this.render();
+};
+
+Player.prototype.setHeight = function (height) {
+    this.height = height;
+    this.refresh();
 };
 
 module.exports = Player;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Web Pong - Bots</title>
+	<title>Web Pong - Shrink player</title>
 
 	<script type="text/javascript" src="../build/web-pong.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -21,33 +21,36 @@
 			resize();
 			window.onresize = resize;
 
-			pong.events.on('update', function () {
-
-				if (pong.players.a.y > pong.balls[0].y) {
-					pong.players.a.move(-1);
-				}
-
-				if (pong.players.a.y < pong.balls[0].y) {
-					pong.players.a.move(1);
-				}
-
+			pong.players.a.addControls({
+				'up': 'up',
+				'down': 'down',
 			});
 
+			pong.players.b.speed = 280;
+
 			pong.events.on('update', function () {
-
-				pong.players.a.speed = pong.players.b.speed = 250;
-
-				if (pong.players.b.y > pong.balls[0].y) {
-					pong.players.b.move(-1);
-				}
-
 				if (pong.players.b.y < pong.balls[0].y) {
 					pong.players.b.move(1);
+				} else if (pong.players.b.y > pong.balls[0].y) {
+					pong.players.b.move(-1);
 				}
-
 			});
 
-			pong.start();
+			pong.players.a.events.on('point', function () {
+				var h = pong.players.b.height - 20;
+				if (h < 10) {
+					h = 10
+				}
+				pong.players.b.setHeight(h);
+			});
+
+			pong.players.b.events.on('point', function () {
+				var h = pong.players.a.height - 20;
+				if (h < 10) {
+					h = 10
+				}
+				pong.players.a.setHeight(h);
+			});
 		};
 
 	</script>
@@ -58,7 +61,7 @@
 	<div id="pong"></div>
 
 	<div class="panel">
-		Bots control the paddles!
+		Move with [UP], [DOWN], score points to get the enemy's paddle to shrink
 	</div>
 
 </body>
