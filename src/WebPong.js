@@ -84,6 +84,8 @@ WebPong.prototype.resize = function () {
     for (var i = 0; i < this.balls.length; i += 1) {
         this.balls[i].updatePosition();
     }
+
+    this.renderer.render(this.stage);
 };
 
 WebPong.prototype.reset = function () {
