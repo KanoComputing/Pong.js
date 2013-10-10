@@ -98,8 +98,8 @@ Pong.prototype.setBackgroundColor = function (color) {
     this.updateIfStill();
 };
 
-Pong.prototype.setTextColor = function (color) {
-    this.events.emit('setTextColor', color);
+Pong.prototype.setTextStyle = function (style) {
+    this.events.emit('setTextStyle', style);
     this.updateIfStill();
 };
 

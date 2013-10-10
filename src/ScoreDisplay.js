@@ -20,13 +20,13 @@ ScoreDisplay.prototype.bind = function () {
         self.update();
     });
 
-    this.player.game.events.on('setTextColor', function (color) {
-        self.setTextColor(color);
+    this.player.game.events.on('setTextStyle', function (color) {
+        self.setTextStyle(color);
     });
 };
 
-ScoreDisplay.prototype.setTextColor = function (color) {
-    var style = extend(config.TEXT_STYLE, { fill: color });
+ScoreDisplay.prototype.setTextStyle = function (style) {
+    style = extend(config.TEXT_STYLE, style);
     this.text.setStyle(style);
 };
 

@@ -2592,8 +2592,8 @@ Pong.prototype.setBackgroundColor = function (color) {
     this.updateIfStill();
 };
 
-Pong.prototype.setTextColor = function (color) {
-    this.events.emit('setTextColor', color);
+Pong.prototype.setTextStyle = function (style) {
+    this.events.emit('setTextStyle', style);
     this.updateIfStill();
 };
 
@@ -2627,13 +2627,13 @@ ScoreDisplay.prototype.bind = function () {
         self.update();
     });
 
-    this.player.game.events.on('setTextColor', function (color) {
-        self.setTextColor(color);
+    this.player.game.events.on('setTextStyle', function (color) {
+        self.setTextStyle(color);
     });
 };
 
-ScoreDisplay.prototype.setTextColor = function (color) {
-    var style = extend(config.TEXT_STYLE, { fill: color });
+ScoreDisplay.prototype.setTextStyle = function (style) {
+    style = extend(config.TEXT_STYLE, style);
     this.text.setStyle(style);
 };
 
@@ -2702,8 +2702,8 @@ StartScreen.prototype.bind = function () {
         self.resize();
     });
 
-    this.game.events.on('setTextColor', function (color) {
-        self.setTextColor(color);
+    this.game.events.on('setTextStyle', function (color) {
+        self.setTextStyle(color);
     });
 
     document.addEventListener('keydown', function (e) {
@@ -2722,8 +2722,8 @@ StartScreen.prototype.drawStartMessage = function () {
     this.game.stage.addChild(this.startMsg);
 };
 
-StartScreen.prototype.setTextColor = function (color) {
-    var style = extend(config.TEXT_STYLE, { fill: color });
+StartScreen.prototype.setTextStyle = function (style) {
+    style = extend(config.TEXT_STYLE, style);
     this.startMsg.setStyle(style);
 };
 

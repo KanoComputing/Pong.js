@@ -1,4 +1,16 @@
 
+@font-face {
+    font-family: '8bit_wondernominal';
+    src: url('fonts/8-bit_wonder-webfont.eot');
+    src: url('fonts/8-bit_wonder-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/8-bit_wonder-webfont.woff') format('woff'),
+         url('fonts/8-bit_wonder-webfont.ttf') format('truetype'),
+         url('fonts/8-bit_wonder-webfont.svg#8bit_wondernominal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 body, html {
 	margin: 0;
 	padding: 0;
@@ -9,7 +21,7 @@ body {
 	background: #eee;
 	color: #666;
 	text-align: center;
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: '8bit_wondernominal', Helvetica, Arial, sans-serif;
 	font-size: 12px;
 }
 
