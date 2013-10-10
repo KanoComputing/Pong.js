@@ -2373,7 +2373,7 @@ Player.prototype.update = function () {
 };
 
 Player.prototype.move = function (direction) {
-    var elapsed = new Date().getTime() - this.lastUpdate,
+    var elapsed = new Date().getTime() - this.lastUpdate || 1000 / 60,
         distance = (elapsed / 1000) * this.speed,
         stageHeight = this.game.renderer.height,
         newY;
@@ -2387,6 +2387,7 @@ Player.prototype.move = function (direction) {
     }
 
     this.y = newY;
+    this.lastFrameLength = elapsed;
 };
 
 Player.prototype.screenX = function () {

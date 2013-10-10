@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Pong - Bots</title>
+
+	<script type="text/javascript" src="../build/web-pong.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
+	<script type="text/javascript">
+
+		window.onload = function () {
+			var pong = new WebPong(document.getElementById('pong'));
+
+			function resize () {
+				var gameHeight = window.innerHeight - 40 + 'px';
+				document.getElementById('pong').style.height = gameHeight;
+
+				pong.resize();
+			}
+
+			resize();
+			window.onresize = resize;
+
+			pong.events.on('update', function () {
+
+				if (pong.players.a.y > pong.balls[0].y) {
+					pong.players.a.move(-1);
+				}
+
+				if (pong.players.a.y < pong.balls[0].y) {
+					pong.players.a.move(1);
+				}
+
+			});
+
+			pong.events.on('update', function () {
+
+				pong.players.a.speed = pong.players.b.speed = 250;
+
+				if (pong.players.b.y > pong.balls[0].y) {
+					pong.players.b.move(-1);
+				}
+
+				if (pong.players.b.y < pong.balls[0].y) {
+					pong.players.b.move(1);
+				}
+
+			});
+		};
+
+	</script>
+
+</head>
+<body>
+
+	<div id="pong"></div>
+
+	<div class="panel">
+		Bots control the paddles!
+	</div>
+
+</body>
+</html>
