@@ -10,7 +10,8 @@
   "dependencies": {
     "pixi": "~0.1.x",
     "keycode": "~0.3.0",
-    "game-loop": "0.0.0"
+    "game-loop": "0.0.0",
+    "geometry": "~0.1.0"
   },
   "author": "Tancredi Trugenberger",
   "license": "BSD-2-Clause"

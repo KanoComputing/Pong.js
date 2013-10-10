@@ -5,7 +5,7 @@
 var pixi = require('pixi'),
     config = require('./config'),
     Keyboard = require('./Keyboard'),
-    Player,
+    geometry = require('geometry'),
     defaults = {
         barWidth: config.barsWidth,
         barHeight: 100,
@@ -14,7 +14,8 @@ var pixi = require('pixi'),
             'down': null
         },
         speed: 300
-    };
+    },
+    Player;
 
 Player = function (game, options) {
     this.game = game;
@@ -34,7 +35,7 @@ Player = function (game, options) {
     this.game.stage.addChild(this.graphics);
 
     this.render();
-    this.updateX();
+    this.updatePosition();
 };
 
 Player.prototype.render = function () {
@@ -76,18 +77,32 @@ Player.prototype.move = function (direction) {
     this.y = newY;
 };
 
-Player.prototype.updateX = function () {
+Player.prototype.updatePosition = function () {
+    this.graphics.position.x = this.getX();
+};
+
+Player.prototype.getX = function () {
     var stageWidth = this.game.renderer.width,
-        spacing = config.linesDistance + config.playerMargin,
-        x;
+        spacing = config.linesDistance + config.playerMargin;
 
     if (this.side === 'left') {
-        x = spacing;
+        return spacing;
     } else {
-        x = stageWidth - spacing - this.width;
+        return stageWidth - spacing - this.width;
     }
+};
 
-    this.graphics.position.x = x;
+Player.prototype.getBoundingBox = function () {
+    return new geometry.Rect(
+        {
+            x: this.getX(),
+            y: this.y + this.game.renderer.height / 2 - this.height / 2
+        },
+        {
+            width: this.width,
+            height: this.height
+        }
+    );
 };
 
 module.exports = Player;

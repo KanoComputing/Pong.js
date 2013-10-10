@@ -3,12 +3,13 @@
 'use strict';
 
 var pixi = require('pixi'),
-    Ball,
+    geometry = require('geometry'),
     defaults = {
         speed: 300,
-        angle: Math.random() * 90 - 45,
+        angle: 15,
         size: 10
-    };
+    },
+    Ball;
 
 Ball = function (game, options) {
     if (!options) {
@@ -22,6 +23,11 @@ Ball = function (game, options) {
     this.size = options.size || defaults.size;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
+
+    this.velocity = {
+        x: this.speed,
+        y: this.speed
+    };
 
     this.render();
 };
@@ -38,11 +44,10 @@ Ball.prototype.render = function () {
 };
 
 Ball.prototype.updatePosition = function () {
-    var elapsed = new Date().getTime() - this.lastUpdate,
-        distance = (elapsed / 1000) * this.speed;
+    var elapsed = new Date().getTime() - this.lastUpdate;
 
-    this.x += Math.cos(this.angle * (Math.PI / 180)) * distance;
-    this.y += Math.sin(this.angle * (Math.PI / 180)) * distance;
+    this.x += (elapsed / 1000) * this.velocity.x;
+    this.y += (elapsed / 1000) * this.velocity.y;
 
     this.graphics.position.x = this.game.renderer.width / 2 + this.x;
     this.graphics.position.y = this.game.renderer.height / 2 + this.y;
@@ -51,6 +56,75 @@ Ball.prototype.updatePosition = function () {
 Ball.prototype.update = function () {
     this.updatePosition();
     this.lastUpdate = new Date().getTime();
+    this.checkCollisions();
+};
+
+Ball.prototype.getBoundingBox = function () {
+    return new geometry.Rect(
+        {
+            x: this.game.renderer.width / 2 + this.x - this.size,
+            y: this.game.renderer.height / 2 + this.y - this.size
+        },
+        {
+            width: this.size * 2,
+            height: this.size * 2
+        }
+    );
+};
+
+Ball.prototype.checkCollisions = function () {
+    if (this.checkWallsCollision()) {
+        return true;
+    }
+
+    for (var key in this.game.players) {
+        if (this.game.players.hasOwnProperty(key)) {
+            if (this.checkPlayerCollision(this.game.players[key])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+Ball.prototype.checkWallsCollision = function () {
+    var BB = this.getBoundingBox();
+
+    if (BB.origin.y < 0) {
+        this.bounce(0, 1);
+        return true;
+    } else if (BB.getMax().y > this.game.renderer.height) {
+        this.bounce(0, -1);
+        return true;
+    }
+
+    return false;
+};
+
+Ball.prototype.checkPlayerCollision = function (player) {
+    var BB = this.getBoundingBox(),
+        targetBB = player.getBoundingBox();
+
+    if (BB.intersectsRect(targetBB)) {
+
+        if (player.side === 'left') {
+            this.bounce(1, 0);
+        } else {
+            this.bounce(-1, 0);
+        }
+
+        return true;
+    }
+};
+
+Ball.prototype.bounce = function (multiplyX, multiplyY) {
+    if (multiplyX) {
+        this.velocity.x = Math.abs(this.velocity.x) * multiplyX;
+    }
+    if (multiplyY) {
+        this.velocity.y = Math.abs(this.velocity.y) * multiplyY;
+    }
 };
 
 module.exports = Ball;

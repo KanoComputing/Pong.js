@@ -64,7 +64,7 @@ WebPong.prototype.resize = function () {
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {
-            this.players[player].updateX();
+            this.players[player].updatePosition();
         }
     }
 };
