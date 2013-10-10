@@ -1,3 +1,8 @@
+# Pong.js
+
+> Configurable JavaScript Pong game in the browser. Uses [Pixi.js](https://github.com/GoodBoyDigital/pixi.js) for rendering. Available stand-alone or as npm module for [Browserify](http://browserify.org/)
+
+> ![Screenshot](http://oi39.tinypic.com/10hr1hf.jpg)
 
 # Usage
 
