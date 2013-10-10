@@ -38,6 +38,7 @@ pong.events.on('update', function () {
 	}
 
 });
+```
 
 # Width Browserify
 
