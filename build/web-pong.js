@@ -1287,12 +1287,63 @@ module.exports={console:global.console,document:global.document,location:global.
 
 'use strict';
 
+var config = require('./config'),
+    pixi = require('pixi'),
+    Arena;
+
+Arena = function (game) {
+    this.game = game;
+
+    this.drawLines();
+};
+
+Arena.prototype.getLinePositions = function () {
+    return [
+        config.linesDistance,
+        this.game.renderer.width / 2,
+        this.game.renderer.width - config.linesDistance
+    ];
+};
+
+Arena.prototype.drawLines = function () {
+    var positions = this.getLinePositions();
+
+    this.lines = [];
+
+    for (var i = 0; i < positions.length; i += 1) {
+        this.lines[i] = new pixi.Graphics();
+        this.game.stage.addChild(this.lines[i]);
+    }
+};
+
+Arena.prototype.updateLines = function () {
+    var positions = this.getLinePositions();
+
+    for (var i = 0; i < positions.length; i += 1) {
+        this.lines[i].clear();
+        this.lines[i].beginFill(0xFFFFFF, 1);
+        this.lines[i].drawRect(0, 0, 1, this.game.renderer.height);
+        this.lines[i].endFill();
+        this.lines[i].position.x = positions[i];
+    }
+};
+
+Arena.prototype.resize = function () {
+    this.updateLines();
+};
+
+module.exports = Arena;
+
+},{"./config":56,"pixi":26}],52:[function(require,module,exports){
+/* global module, require */
+
+'use strict';
+
 var pixi = require('pixi'),
     geometry = require('geometry'),
     config = require('./config'),
     defaults = {
         speed: 300,
-        angle: 15,
         size: 10
     },
     Ball;
@@ -1303,9 +1354,8 @@ Ball = function (game, options) {
     }
 
     this.game =  game;
-    this.x = 0;
-    this.y = 0;
-    this.angle = options.angle || defaults.angle;
+    this.x = options.x || 0;
+    this.y = options.y || 0;
     this.size = options.size || defaults.size;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
@@ -1426,7 +1476,7 @@ Ball.prototype.reset = function () {
 
 module.exports = Ball;
 
-},{"./config":55,"geometry":3,"pixi":26}],52:[function(require,module,exports){
+},{"./config":56,"geometry":3,"pixi":26}],53:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1499,7 +1549,7 @@ Keyboard.prototype.setKeyState = function (keyName, state) {
 
 module.exports = Keyboard;
 
-},{"keycode":4}],53:[function(require,module,exports){
+},{"keycode":4}],54:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1538,6 +1588,7 @@ Player = function (game, options) {
     this.game.stage.addChild(this.graphics);
 
     this.render();
+    this.update();
     this.updatePosition();
 };
 
@@ -1548,9 +1599,7 @@ Player.prototype.render = function () {
 };
 
 Player.prototype.update = function () {
-    var centerY = this.game.renderer.height / 2;
-
-    this.graphics.position.y = centerY - this.height / 2 + this.y;
+    this.graphics.position.y = this.screenY();
 
     if (this.keyboard.pressed.up) {
         this.move(-1);
@@ -1581,10 +1630,11 @@ Player.prototype.move = function (direction) {
 };
 
 Player.prototype.updatePosition = function () {
-    this.graphics.position.x = this.getX();
+    this.graphics.position.x = this.screenX();
+    this.graphics.position.y = this.screenY();
 };
 
-Player.prototype.getX = function () {
+Player.prototype.screenX = function () {
     var stageWidth = this.game.renderer.width,
         spacing = config.linesDistance + config.playerMargin;
 
@@ -1595,11 +1645,15 @@ Player.prototype.getX = function () {
     }
 };
 
+Player.prototype.screenY = function () {
+    return this.y + this.game.renderer.height / 2 - this.height / 2;
+};
+
 Player.prototype.getBoundingBox = function () {
     return new geometry.Rect(
         {
-            x: this.getX(),
-            y: this.y + this.game.renderer.height / 2 - this.height / 2
+            x: this.screenX(),
+            y: this.screenY()
         },
         {
             width: this.width,
@@ -1618,7 +1672,7 @@ Player.prototype.addPoint = function () {
 
 module.exports = Player;
 
-},{"./Keyboard":52,"./config":55,"geometry":3,"pixi":26}],54:[function(require,module,exports){
+},{"./Keyboard":53,"./config":56,"geometry":3,"pixi":26}],55:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1627,7 +1681,7 @@ var pixi = require('pixi'),
     Loop = require('game-loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
-    config = require('./config'),
+    Arena = require('./Arena'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -1637,6 +1691,8 @@ WebPong = function (wrapper) {
     this.stage = new pixi.Stage(0x333333);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
+    this.balls = [];
+    this.arena = new Arena(this);
 
     this.players = {
         a: new Player(this, {
@@ -1649,19 +1705,28 @@ WebPong = function (wrapper) {
         })
     };
 
-    this.ball = new Ball(this);
-
     this.resize();
-    this.drawLines();
 
     this.loop.use(function () {
         self.update();
     });
 
+    this.initScreen();
+
     wrapper.appendChild(this.renderer.view);
 };
 
+WebPong.prototype.initScreen = function () {
+    this.update();
+};
+
+WebPong.prototype.addBall = function () {
+    console.log('fds');
+    this.balls.push(new Ball(this));
+};
+
 WebPong.prototype.start = function () {
+    this.addBall();
     this.loop.play();
 };
 
@@ -1674,7 +1739,9 @@ WebPong.prototype.update = function () {
         }
     }
 
-    this.ball.update();
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].update();
+    }
 };
 
 WebPong.prototype.resize = function () {
@@ -1682,44 +1749,34 @@ WebPong.prototype.resize = function () {
         height = this.wrapper.clientHeight;
 
     this.renderer.resize(width, height);
+    this.arena.resize();
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {
             this.players[player].updatePosition();
         }
     }
-};
 
-WebPong.prototype.drawLines = function () {
-    var positions = [
-            config.linesDistance,
-            this.renderer.width / 2,
-            this.renderer.width - config.linesDistance
-        ],
-        lines = new pixi.Graphics();
-
-    this.stage.addChild(lines);
-
-    for (var i = 0; i < positions.length; i += 1) {
-        lines.beginFill(0xFFFFFF, 1);
-        lines.drawRect(positions[i], 0, 1, this.renderer.height);
-        lines.endFill();
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].updatePosition();
     }
 };
 
 WebPong.prototype.reset = function () {
-    this.ball.reset();
-
     for (var key in this.players) {
         if (this.players.hasOwnProperty(key)) {
             this.players[key].reset();
         }
     }
+
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].reset();
+    }
 };
 
 module.exports = WebPong;
 
-},{"./Ball":51,"./Player":53,"./config":55,"game-loop":1,"pixi":26}],55:[function(require,module,exports){
+},{"./Arena":51,"./Ball":52,"./Player":54,"game-loop":1,"pixi":26}],56:[function(require,module,exports){
 /* global module */
 
 'use strict';
@@ -1729,10 +1786,10 @@ module.exports = {
 	linesDistance: 20,
 	playerMargin: 10
 };
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /* global require */
 
 window.WebPong = require('./WebPong');
 
-},{"./WebPong":54}]},{},[56])
+},{"./WebPong":55}]},{},[57])
 ;

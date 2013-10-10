@@ -22,9 +22,16 @@
 	</style>
 
 	<script type="text/javascript">
+
 		window.onload = function () {
-			new WebPong(document.getElementById('pong')).start();
+			var pong = new WebPong(document.getElementById('pong'));
+			pong.start()
+
+			window.onresize = function () {
+				pong.resize();
+			};
 		};
+
 	</script>
 
 </head>

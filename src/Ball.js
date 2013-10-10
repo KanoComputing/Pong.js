@@ -7,7 +7,6 @@ var pixi = require('pixi'),
     config = require('./config'),
     defaults = {
         speed: 300,
-        angle: 15,
         size: 10
     },
     Ball;
@@ -18,9 +17,8 @@ Ball = function (game, options) {
     }
 
     this.game =  game;
-    this.x = 0;
-    this.y = 0;
-    this.angle = options.angle || defaults.angle;
+    this.x = options.x || 0;
+    this.y = options.y || 0;
     this.size = options.size || defaults.size;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();

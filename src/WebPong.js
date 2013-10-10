@@ -6,7 +6,7 @@ var pixi = require('pixi'),
     Loop = require('game-loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
-    config = require('./config'),
+    Arena = require('./Arena'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -16,6 +16,8 @@ WebPong = function (wrapper) {
     this.stage = new pixi.Stage(0x333333);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
+    this.balls = [];
+    this.arena = new Arena(this);
 
     this.players = {
         a: new Player(this, {
@@ -28,19 +30,28 @@ WebPong = function (wrapper) {
         })
     };
 
-    this.ball = new Ball(this);
-
     this.resize();
-    this.drawLines();
 
     this.loop.use(function () {
         self.update();
     });
 
+    this.initScreen();
+
     wrapper.appendChild(this.renderer.view);
 };
 
+WebPong.prototype.initScreen = function () {
+    this.update();
+};
+
+WebPong.prototype.addBall = function () {
+    console.log('fds');
+    this.balls.push(new Ball(this));
+};
+
 WebPong.prototype.start = function () {
+    this.addBall();
     this.loop.play();
 };
 
@@ -53,7 +64,9 @@ WebPong.prototype.update = function () {
         }
     }
 
-    this.ball.update();
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].update();
+    }
 };
 
 WebPong.prototype.resize = function () {
@@ -61,38 +74,28 @@ WebPong.prototype.resize = function () {
         height = this.wrapper.clientHeight;
 
     this.renderer.resize(width, height);
+    this.arena.resize();
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {
             this.players[player].updatePosition();
         }
     }
-};
 
-WebPong.prototype.drawLines = function () {
-    var positions = [
-            config.linesDistance,
-            this.renderer.width / 2,
-            this.renderer.width - config.linesDistance
-        ],
-        lines = new pixi.Graphics();
-
-    this.stage.addChild(lines);
-
-    for (var i = 0; i < positions.length; i += 1) {
-        lines.beginFill(0xFFFFFF, 1);
-        lines.drawRect(positions[i], 0, 1, this.renderer.height);
-        lines.endFill();
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].updatePosition();
     }
 };
 
 WebPong.prototype.reset = function () {
-    this.ball.reset();
-
     for (var key in this.players) {
         if (this.players.hasOwnProperty(key)) {
             this.players[key].reset();
         }
+    }
+
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].reset();
     }
 };
 

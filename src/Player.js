@@ -36,6 +36,7 @@ Player = function (game, options) {
     this.game.stage.addChild(this.graphics);
 
     this.render();
+    this.update();
     this.updatePosition();
 };
 
@@ -46,9 +47,7 @@ Player.prototype.render = function () {
 };
 
 Player.prototype.update = function () {
-    var centerY = this.game.renderer.height / 2;
-
-    this.graphics.position.y = centerY - this.height / 2 + this.y;
+    this.graphics.position.y = this.screenY();
 
     if (this.keyboard.pressed.up) {
         this.move(-1);
@@ -79,10 +78,11 @@ Player.prototype.move = function (direction) {
 };
 
 Player.prototype.updatePosition = function () {
-    this.graphics.position.x = this.getX();
+    this.graphics.position.x = this.screenX();
+    this.graphics.position.y = this.screenY();
 };
 
-Player.prototype.getX = function () {
+Player.prototype.screenX = function () {
     var stageWidth = this.game.renderer.width,
         spacing = config.linesDistance + config.playerMargin;
 
@@ -93,11 +93,15 @@ Player.prototype.getX = function () {
     }
 };
 
+Player.prototype.screenY = function () {
+    return this.y + this.game.renderer.height / 2 - this.height / 2;
+};
+
 Player.prototype.getBoundingBox = function () {
     return new geometry.Rect(
         {
-            x: this.getX(),
-            y: this.y + this.game.renderer.height / 2 - this.height / 2
+            x: this.screenX(),
+            y: this.screenY()
         },
         {
             width: this.width,
