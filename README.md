@@ -4,19 +4,19 @@
 * Browserify `npm install -g browserify`
 * Watchify `npm install -g watchify`
 
-# Install
+### Install
 
 `npm install`
 
-# Build
+### Build
 
 `npm run build`
 
-# Build
+### Build
 
 `npm run watch`
 
-# Simple Usage
+### Simple Usage
 
 ```javascript
 
