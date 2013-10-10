@@ -3,8 +3,8 @@
 'use strict';
 
 module.exports = {
-	barsWidth: 15,
-	linesDistance: 20,
-	playerMargin: 10,
-	scoresMargin: { x: 30, y: 30 }
+	BARS_WIDTH: 15,
+	LINES_DISTANCE: 20,
+	PLAYER_MARGIN: 10,
+	SCORES_MARGIN: { x: 30, y: 30 }
 };

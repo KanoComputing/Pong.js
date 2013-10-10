@@ -8,7 +8,6 @@ var pixi = require('pixi'),
     ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     defaults = {
-        barWidth: config.barsWidth,
         barHeight: 100,
         controls: {
             'up': null,
@@ -21,7 +20,7 @@ var pixi = require('pixi'),
 Player = function (game, options) {
     this.game = game;
     this.side = options.side;
-    this.width = options.width || defaults.barWidth;
+    this.width = config.BARS_WIDTH;
     this.height = options.height || defaults.barHeight;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
@@ -97,7 +96,7 @@ Player.prototype.move = function (direction) {
 
 Player.prototype.screenX = function () {
     var stageWidth = this.game.renderer.width,
-        spacing = config.linesDistance + config.playerMargin;
+        spacing = config.LINES_DISTANCE + config.PLAYER_MARGIN;
 
     if (this.side === 'left') {
         return spacing;

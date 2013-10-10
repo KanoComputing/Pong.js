@@ -23,9 +23,9 @@ Arena.prototype.bind = function () {
 
 Arena.prototype.getLinePositions = function () {
     return [
-        config.linesDistance,
+        config.LINES_DISTANCE,
         this.game.renderer.width / 2,
-        this.game.renderer.width - config.linesDistance
+        this.game.renderer.width - config.LINES_DISTANCE
     ];
 };
 

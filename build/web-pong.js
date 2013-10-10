@@ -1920,9 +1920,9 @@ Arena.prototype.bind = function () {
 
 Arena.prototype.getLinePositions = function () {
     return [
-        config.linesDistance,
+        config.LINES_DISTANCE,
         this.game.renderer.width / 2,
-        this.game.renderer.width - config.linesDistance
+        this.game.renderer.width - config.LINES_DISTANCE
     ];
 };
 
@@ -2069,10 +2069,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, 1);
     } else if (BB.getMax().y > this.game.renderer.height) {
         this.bounce(0, -1);
-    } else if (BB.origin.x < config.linesDistance) {
+    } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
         this.game.reset();
-    } else if (BB.origin.x > this.game.renderer.width - config.linesDistance) {
+    } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
         this.game.reset();
     } else {
@@ -2198,7 +2198,6 @@ var pixi = require('pixi'),
     ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     defaults = {
-        barWidth: config.barsWidth,
         barHeight: 100,
         controls: {
             'up': null,
@@ -2211,7 +2210,7 @@ var pixi = require('pixi'),
 Player = function (game, options) {
     this.game = game;
     this.side = options.side;
-    this.width = options.width || defaults.barWidth;
+    this.width = config.BARS_WIDTH;
     this.height = options.height || defaults.barHeight;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
@@ -2287,7 +2286,7 @@ Player.prototype.move = function (direction) {
 
 Player.prototype.screenX = function () {
     var stageWidth = this.game.renderer.width,
-        spacing = config.linesDistance + config.playerMargin;
+        spacing = config.LINES_DISTANCE + config.PLAYER_MARGIN;
 
     if (this.side === 'left') {
         return spacing;
@@ -2354,7 +2353,7 @@ ScoreDisplay.prototype.render = function () {
         this.text.anchor.x = 0;
     }
 
-    this.text.position.y = config.scoresMargin.y;
+    this.text.position.y = config.SCORES_MARGIN.y;
     this.player.game.stage.addChild(this.text);
 };
 
@@ -2362,9 +2361,9 @@ ScoreDisplay.prototype.updatePosition = function () {
     var renderer = this.player.game.renderer;
 
     if (this.player.side === 'left') {
-        this.text.position.x = renderer.width / 2 - config.scoresMargin.x;
+        this.text.position.x = renderer.width / 2 - config.SCORES_MARGIN.x;
     } else {
-        this.text.position.x = renderer.width / 2 + config.scoresMargin.x;
+        this.text.position.x = renderer.width / 2 + config.SCORES_MARGIN.x;
     }
 };
 
@@ -2535,10 +2534,10 @@ module.exports = WebPong;
 'use strict';
 
 module.exports = {
-	barsWidth: 15,
-	linesDistance: 20,
-	playerMargin: 10,
-	scoresMargin: { x: 30, y: 30 }
+	BARS_WIDTH: 15,
+	LINES_DISTANCE: 20,
+	PLAYER_MARGIN: 10,
+	SCORES_MARGIN: { x: 30, y: 30 }
 };
 },{}],82:[function(require,module,exports){
 /* global require */

@@ -23,7 +23,7 @@ ScoreDisplay.prototype.render = function () {
         this.text.anchor.x = 0;
     }
 
-    this.text.position.y = config.scoresMargin.y;
+    this.text.position.y = config.SCORES_MARGIN.y;
     this.player.game.stage.addChild(this.text);
 };
 
@@ -31,9 +31,9 @@ ScoreDisplay.prototype.updatePosition = function () {
     var renderer = this.player.game.renderer;
 
     if (this.player.side === 'left') {
-        this.text.position.x = renderer.width / 2 - config.scoresMargin.x;
+        this.text.position.x = renderer.width / 2 - config.SCORES_MARGIN.x;
     } else {
-        this.text.position.x = renderer.width / 2 + config.scoresMargin.x;
+        this.text.position.x = renderer.width / 2 + config.SCORES_MARGIN.x;
     }
 };
 

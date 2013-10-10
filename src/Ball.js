@@ -111,10 +111,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, 1);
     } else if (BB.getMax().y > this.game.renderer.height) {
         this.bounce(0, -1);
-    } else if (BB.origin.x < config.linesDistance) {
+    } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
         this.game.reset();
-    } else if (BB.origin.x > this.game.renderer.width - config.linesDistance) {
+    } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
         this.game.reset();
     } else {
