@@ -9,7 +9,7 @@ module.exports = {
 	PLAYER_COLOR: 0xEEEEEE,
 	SCORES_MARGIN: { x: 30, y: 30 },
 	TEXT_STYLE: {
-        font: '60px Bariol',
+        font: '60px Helvetica, Arial, sans-serif',
         fill: '#eee',
         align: 'center'
     },
