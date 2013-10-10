@@ -2491,7 +2491,120 @@ Player.prototype.setColor = function (color) {
 
 module.exports = Player;
 
-},{"./Keyboard":77,"./ScoreDisplay":79,"./config":82,"event-emitter":5,"geometry":27,"pixi":50}],79:[function(require,module,exports){
+},{"./Keyboard":77,"./ScoreDisplay":80,"./config":82,"event-emitter":5,"geometry":27,"pixi":50}],79:[function(require,module,exports){
+/* global module, require */
+
+'use strict';
+
+var pixi = require('pixi'),
+    Loop = require('game-loop'),
+    Player = require('./Player'),
+    Ball = require('./Ball'),
+    Arena = require('./Arena'),
+    StartScreen = require('./StartScreen'),
+    EventEmitter = require('event-emitter'),
+    config = require('./config'),
+    Pong;
+
+Pong = function (wrapper) {
+    var self = this;
+
+    this.wrapper = wrapper;
+    this.stage = new pixi.Stage(config.BG_COLOR);
+    this.renderer = pixi.autoDetectRenderer();
+    this.loop = new Loop();
+    this.balls = [];
+    this.events = new EventEmitter();
+    this.arena = new Arena(this);
+    this.startScreen = new StartScreen(this);
+
+    this.players = {
+        a: new Player(this, { side: 'left' }),
+        b: new Player(this, { side: 'right' })
+    };
+
+    this.resize();
+
+    this.loop.use(function () {
+        self.update();
+    });
+
+    this.startScreen.show();
+    this.update();
+
+    wrapper.appendChild(this.renderer.view);
+};
+
+Pong.prototype.addBall = function () {
+    this.balls.push(new Ball(this));
+};
+
+Pong.prototype.start = function () {
+    this.addBall();
+    this.loop.play();
+    this.events.emit('start', this);
+};
+
+Pong.prototype.stop = function () {
+    this.loop.stop();
+    this.events.emit('start', this);
+};
+
+Pong.prototype.update = function () {
+    this.renderer.render(this.stage);
+
+    this.events.emit('update', this);
+};
+
+Pong.prototype.resize = function () {
+    var width = this.wrapper.clientWidth,
+        height = this.wrapper.clientHeight;
+
+    this.renderer.resize(width, height);
+
+    this.events.emit('resize', width, height, this);
+
+    this.renderer.render(this.stage);
+};
+
+Pong.prototype.reset = function () {
+    this.events.emit('reset', this);
+    this.resetBalls();
+};
+
+Pong.prototype.resetBalls = function () {
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].remove();
+    }
+
+    this.balls = [];
+    this.addBall();
+};
+
+Pong.prototype.updateIfStill = function () {
+    if (!this.loop.playing) {
+        this.update();
+    }
+};
+
+Pong.prototype.setBackgroundColor = function (color) {
+    this.stage.setBackgroundColor('0x' + color.substr(1));
+    this.updateIfStill();
+};
+
+Pong.prototype.setTextColor = function (color) {
+    this.events.emit('setTextColor', color);
+    this.updateIfStill();
+};
+
+Pong.prototype.setLinesColor = function (color) {
+    this.events.emit('setLinesColor', color);
+    this.updateIfStill();
+};
+
+module.exports = Pong;
+
+},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":81,"./config":82,"event-emitter":5,"game-loop":25,"pixi":50}],80:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -2557,7 +2670,7 @@ ScoreDisplay.prototype.resize = function () {
 
 module.exports = ScoreDisplay;
 
-},{"./config":82,"deep-extend":1,"pixi":50}],80:[function(require,module,exports){
+},{"./config":82,"deep-extend":1,"pixi":50}],81:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -2634,120 +2747,7 @@ StartScreen.prototype.show = function () {
 
 module.exports = StartScreen;
 
-},{"./config":82,"deep-extend":1,"keycode":28,"pixi":50}],81:[function(require,module,exports){
-/* global module, require */
-
-'use strict';
-
-var pixi = require('pixi'),
-    Loop = require('game-loop'),
-    Player = require('./Player'),
-    Ball = require('./Ball'),
-    Arena = require('./Arena'),
-    StartScreen = require('./StartScreen'),
-    EventEmitter = require('event-emitter'),
-    config = require('./config'),
-    WebPong;
-
-WebPong = function (wrapper) {
-    var self = this;
-
-    this.wrapper = wrapper;
-    this.stage = new pixi.Stage(config.BG_COLOR);
-    this.renderer = pixi.autoDetectRenderer();
-    this.loop = new Loop();
-    this.balls = [];
-    this.events = new EventEmitter();
-    this.arena = new Arena(this);
-    this.startScreen = new StartScreen(this);
-
-    this.players = {
-        a: new Player(this, { side: 'left' }),
-        b: new Player(this, { side: 'right' })
-    };
-
-    this.resize();
-
-    this.loop.use(function () {
-        self.update();
-    });
-
-    this.startScreen.show();
-    this.update();
-
-    wrapper.appendChild(this.renderer.view);
-};
-
-WebPong.prototype.addBall = function () {
-    this.balls.push(new Ball(this));
-};
-
-WebPong.prototype.start = function () {
-    this.addBall();
-    this.loop.play();
-    this.events.emit('start', this);
-};
-
-WebPong.prototype.stop = function () {
-    this.loop.stop();
-    this.events.emit('start', this);
-};
-
-WebPong.prototype.update = function () {
-    this.renderer.render(this.stage);
-
-    this.events.emit('update', this);
-};
-
-WebPong.prototype.resize = function () {
-    var width = this.wrapper.clientWidth,
-        height = this.wrapper.clientHeight;
-
-    this.renderer.resize(width, height);
-
-    this.events.emit('resize', width, height, this);
-
-    this.renderer.render(this.stage);
-};
-
-WebPong.prototype.reset = function () {
-    this.events.emit('reset', this);
-    this.resetBalls();
-};
-
-WebPong.prototype.resetBalls = function () {
-    for (var i = 0; i < this.balls.length; i += 1) {
-        this.balls[i].remove();
-    }
-
-    this.balls = [];
-    this.addBall();
-};
-
-WebPong.prototype.updateIfStill = function () {
-    if (!this.loop.playing) {
-        this.update();
-    }
-};
-
-WebPong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor('0x' + color.substr(1));
-    this.updateIfStill();
-};
-
-WebPong.prototype.setTextColor = function (color) {
-    this.events.emit('setTextColor', color);
-    this.updateIfStill();
-};
-
-WebPong.prototype.setLinesColor = function (color) {
-    this.events.emit('setLinesColor', color);
-    this.updateIfStill();
-};
-
-module.exports = WebPong;
-
-},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":80,"./config":82,"event-emitter":5,"game-loop":25,"pixi":50}],82:[function(require,module,exports){
+},{"./config":82,"deep-extend":1,"keycode":28,"pixi":50}],82:[function(require,module,exports){
 /* global module */
 
 'use strict';
@@ -2769,7 +2769,7 @@ module.exports = {
 },{}],83:[function(require,module,exports){
 /* global require */
 
-window.WebPong = require('./WebPong');
+window.Pong = require('./Pong');
 
-},{"./WebPong":81}]},{},[83])
+},{"./Pong":79}]},{},[83])
 ;

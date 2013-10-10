@@ -10,9 +10,9 @@ var pixi = require('pixi'),
     StartScreen = require('./StartScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
-    WebPong;
+    Pong;
 
-WebPong = function (wrapper) {
+Pong = function (wrapper) {
     var self = this;
 
     this.wrapper = wrapper;
@@ -41,28 +41,28 @@ WebPong = function (wrapper) {
     wrapper.appendChild(this.renderer.view);
 };
 
-WebPong.prototype.addBall = function () {
+Pong.prototype.addBall = function () {
     this.balls.push(new Ball(this));
 };
 
-WebPong.prototype.start = function () {
+Pong.prototype.start = function () {
     this.addBall();
     this.loop.play();
     this.events.emit('start', this);
 };
 
-WebPong.prototype.stop = function () {
+Pong.prototype.stop = function () {
     this.loop.stop();
     this.events.emit('start', this);
 };
 
-WebPong.prototype.update = function () {
+Pong.prototype.update = function () {
     this.renderer.render(this.stage);
 
     this.events.emit('update', this);
 };
 
-WebPong.prototype.resize = function () {
+Pong.prototype.resize = function () {
     var width = this.wrapper.clientWidth,
         height = this.wrapper.clientHeight;
 
@@ -73,12 +73,12 @@ WebPong.prototype.resize = function () {
     this.renderer.render(this.stage);
 };
 
-WebPong.prototype.reset = function () {
+Pong.prototype.reset = function () {
     this.events.emit('reset', this);
     this.resetBalls();
 };
 
-WebPong.prototype.resetBalls = function () {
+Pong.prototype.resetBalls = function () {
     for (var i = 0; i < this.balls.length; i += 1) {
         this.balls[i].remove();
     }
@@ -87,25 +87,25 @@ WebPong.prototype.resetBalls = function () {
     this.addBall();
 };
 
-WebPong.prototype.updateIfStill = function () {
+Pong.prototype.updateIfStill = function () {
     if (!this.loop.playing) {
         this.update();
     }
 };
 
-WebPong.prototype.setBackgroundColor = function (color) {
+Pong.prototype.setBackgroundColor = function (color) {
     this.stage.setBackgroundColor('0x' + color.substr(1));
     this.updateIfStill();
 };
 
-WebPong.prototype.setTextColor = function (color) {
+Pong.prototype.setTextColor = function (color) {
     this.events.emit('setTextColor', color);
     this.updateIfStill();
 };
 
-WebPong.prototype.setLinesColor = function (color) {
+Pong.prototype.setLinesColor = function (color) {
     this.events.emit('setLinesColor', color);
     this.updateIfStill();
 };
 
-module.exports = WebPong;
+module.exports = Pong;

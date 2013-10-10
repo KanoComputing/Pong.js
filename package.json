@@ -2,10 +2,10 @@
   "name": "web-pong",
   "version": "0.0.0",
   "description": "HTML5 Pong",
-  "main": "",
+  "main": "src/Pong.js",
   "scripts": {
-    "build": "browserify src/index.js -o build/web-pong.js",
-    "watch": "watchify src/index.js -o build/web-pong.js"
+    "build": "browserify src/index.js -o build/Pong.js",
+    "watch": "watchify src/index.js -o build/Pong.js"
   },
   "dependencies": {
     "pixi": "~0.1.x",

@@ -1,3 +1,3 @@
 /* global require */
 
-window.WebPong = require('./WebPong');
+window.Pong = require('./Pong');
