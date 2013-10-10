@@ -18,14 +18,11 @@ body, html {
 
 body {
 	min-height: 100%;
-	background: #eee;
+	background: #111;
 	color: #666;
 	text-align: center;
 	font-family: '8bit_wondernominal', Helvetica, Arial, sans-serif;
 	font-size: 12px;
-}
-
-body.demo {
 	overflow: hidden;
 }
 
@@ -34,11 +31,20 @@ body.demo {
 	height: 100%;
 }
 
+#pong.framed {
+	width: 800px;
+	height: 600px;
+	margin: 20px auto;
+}
+
 .panel {
 	padding-top: 14px;
 	background: #191919;
 	height: 30px;
-	position: relative;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
 }
 
 .page {

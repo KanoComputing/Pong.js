@@ -14,5 +14,6 @@ module.exports = {
         fill: '#eee',
         align: 'center'
     },
-    LINES_COLOR: 0xEEEEEE
+    LINES_COLOR: 0xEEEEEE,
+    BALL_COLOR: 0xFFFFFF
 };

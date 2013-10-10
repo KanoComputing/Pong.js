@@ -23,6 +23,7 @@ Ball = function (game, options) {
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
     this.removed = false;
+    this.color = config.BALL_COLOR;
 
     this.velocity = {
         x: this.speed,
@@ -39,26 +40,32 @@ Ball.prototype.bind = function () {
     var self = this;
 
     this.game.events.on('update', function () {
-        if (!this.removed) {
+        if (!self.removed) {
             self.update();
         }
     });
 
     this.game.events.on('resize', function () {
-        if (!this.removed) {
+        if (!self.removed) {
             self.updatePosition();
         }
     });
 
     this.game.events.on('reset', function () {
-        if (!this.removed) {
+        if (!self.removed) {
             self.reset();
+        }
+    });
+
+    this.game.events.on('setBallColor', function (color) {
+        if (!self.removed) {
+            self.setColor(color);
         }
     });
 };
 
 Ball.prototype.render = function () {
-    this.graphics.beginFill(0xFFFFFF, 1);
+    this.graphics.beginFill(this.color, 1);
     this.graphics.drawCircle(0, 0, this.size);
     this.graphics.endFill();
 
@@ -180,6 +187,12 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
 Ball.prototype.reset = function () {
     this.x = 0;
     this.y = 0;
+};
+
+Ball.prototype.setColor = function (color) {
+    this.color = '0x' + color.substr(1);
+    this.graphics.clear();
+    this.render();
 };
 
 module.exports = Ball;

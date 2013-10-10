@@ -62,6 +62,12 @@ Pong.prototype.update = function () {
     this.events.emit('update', this);
 };
 
+Pong.prototype.updateIfStill = function () {
+    if (!this.loop.playing) {
+        this.update();
+    }
+};
+
 Pong.prototype.resize = function () {
     var width = this.wrapper.clientWidth,
         height = this.wrapper.clientHeight;
@@ -87,24 +93,22 @@ Pong.prototype.resetBalls = function () {
     this.addBall();
 };
 
-Pong.prototype.updateIfStill = function () {
-    if (!this.loop.playing) {
-        this.update();
-    }
-};
-
 Pong.prototype.setBackgroundColor = function (color) {
     this.stage.setBackgroundColor('0x' + color.substr(1));
     this.updateIfStill();
 };
 
-Pong.prototype.setTextStyle = function (style) {
-    this.events.emit('setTextStyle', style);
+Pong.prototype.setLinesColor = function (color) {
+    this.events.emit('setLinesColor', color);
     this.updateIfStill();
 };
 
-Pong.prototype.setLinesColor = function (color) {
-    this.events.emit('setLinesColor', color);
+Pong.prototype.setBallColor = function (color) {
+    this.events.emit('setBallColor', color);
+};
+
+Pong.prototype.setTextStyle = function (style) {
+    this.events.emit('setTextStyle', style);
     this.updateIfStill();
 };
 

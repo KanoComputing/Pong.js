@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pong.js - Framed</title>
+
+	<script type="text/javascript" src="../build/Pong.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
+	<script type="text/javascript">
+
+		window.onload = function () {
+			var pong = new Pong(document.getElementById('pong'));
+
+			pong.players.a.addControls({
+				'up': 'up',
+				'down': 'down',
+			});
+
+			pong.events.on('update', function () {
+				if (pong.players.b.y < pong.balls[0].y) {
+					pong.players.b.move(1);
+				} else if (pong.players.b.y > pong.balls[0].y) {
+					pong.players.b.move(-1);
+				}
+			});
+		};
+
+	</script>
+
+</head>
+<body>
+
+	<div id="pong" class="framed"></div>
+
+	<div class="panel">
+		Move with [ UP ], [ DOWN ]
+	</div>
+
+</body>
+</html>
