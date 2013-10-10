@@ -27,7 +27,7 @@ StartScreen.prototype.drawStartMessage = function () {
     this.startMsg = new pixi.Text('PRESS ENTER', {
         font: '60px Bariol',
         fill: 'white',
-        align: 'right'
+        align: 'center'
     });
 
     this.hide();

@@ -5,6 +5,7 @@
 var pixi = require('pixi'),
     config = require('./config'),
     Keyboard = require('./Keyboard'),
+    ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     defaults = {
         barWidth: config.barsWidth,
@@ -27,6 +28,7 @@ Player = function (game, options) {
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
     this.score = 0;
+    this.scoreDispay = new ScoreDisplay(this);
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -80,6 +82,12 @@ Player.prototype.move = function (direction) {
 Player.prototype.updatePosition = function () {
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
+    this.scoreDispay.updatePosition();
+};
+
+Player.prototype.resize = function () {
+    this.updatePosition();
+    this.scoreDispay.resize();
 };
 
 Player.prototype.screenX = function () {

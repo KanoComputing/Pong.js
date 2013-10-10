@@ -1334,7 +1334,7 @@ Arena.prototype.resize = function () {
 
 module.exports = Arena;
 
-},{"./config":57,"pixi":26}],52:[function(require,module,exports){
+},{"./config":58,"pixi":26}],52:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1476,7 +1476,7 @@ Ball.prototype.reset = function () {
 
 module.exports = Ball;
 
-},{"./config":57,"geometry":3,"pixi":26}],53:[function(require,module,exports){
+},{"./config":58,"geometry":3,"pixi":26}],53:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1557,6 +1557,7 @@ module.exports = Keyboard;
 var pixi = require('pixi'),
     config = require('./config'),
     Keyboard = require('./Keyboard'),
+    ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     defaults = {
         barWidth: config.barsWidth,
@@ -1579,6 +1580,7 @@ Player = function (game, options) {
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
     this.score = 0;
+    this.scoreDispay = new ScoreDisplay(this);
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -1632,6 +1634,12 @@ Player.prototype.move = function (direction) {
 Player.prototype.updatePosition = function () {
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
+    this.scoreDispay.updatePosition();
+};
+
+Player.prototype.resize = function () {
+    this.updatePosition();
+    this.scoreDispay.resize();
 };
 
 Player.prototype.screenX = function () {
@@ -1672,7 +1680,53 @@ Player.prototype.addPoint = function () {
 
 module.exports = Player;
 
-},{"./Keyboard":53,"./config":57,"geometry":3,"pixi":26}],55:[function(require,module,exports){
+},{"./Keyboard":53,"./ScoreDisplay":55,"./config":58,"geometry":3,"pixi":26}],55:[function(require,module,exports){
+/* global module, require */
+
+'use strict';
+
+var pixi = require('pixi'),
+    config = require('./config'),
+    ScoreDisplay;
+
+ScoreDisplay = function (player) {
+    this.player = player;
+    this.render();
+};
+
+ScoreDisplay.prototype.render = function () {
+    this.text = new pixi.Text(this.player.score + '', {
+        font: '60px Bariol',
+        fill: 'white'
+    });
+
+    if (this.player.side === 'left') {
+        this.text.anchor.x = 1;
+    } else {
+        this.text.anchor.x = 0;
+    }
+
+    this.text.position.y = config.scoresMargin.y;
+    this.player.game.stage.addChild(this.text);
+};
+
+ScoreDisplay.prototype.updatePosition = function () {
+    var renderer = this.player.game.renderer;
+
+    if (this.player.side === 'left') {
+        this.text.position.x = renderer.width / 2 - config.scoresMargin.x;
+    } else {
+        this.text.position.x = renderer.width / 2 + config.scoresMargin.x;
+    }
+};
+
+ScoreDisplay.prototype.resize = function () {
+    this.updatePosition();
+};
+
+module.exports = ScoreDisplay;
+
+},{"./config":58,"pixi":26}],56:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1702,7 +1756,7 @@ StartScreen.prototype.drawStartMessage = function () {
     this.startMsg = new pixi.Text('PRESS ENTER', {
         font: '60px Bariol',
         fill: 'white',
-        align: 'right'
+        align: 'center'
     });
 
     this.hide();
@@ -1729,7 +1783,7 @@ StartScreen.prototype.show = function () {
 
 module.exports = StartScreen;
 
-},{"keycode":4,"pixi":26}],56:[function(require,module,exports){
+},{"keycode":4,"pixi":26}],57:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1809,7 +1863,7 @@ WebPong.prototype.resize = function () {
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {
-            this.players[player].updatePosition();
+            this.players[player].resize();
         }
     }
 
@@ -1832,7 +1886,7 @@ WebPong.prototype.reset = function () {
 
 module.exports = WebPong;
 
-},{"./Arena":51,"./Ball":52,"./Player":54,"./StartScreen":55,"game-loop":1,"pixi":26}],57:[function(require,module,exports){
+},{"./Arena":51,"./Ball":52,"./Player":54,"./StartScreen":56,"game-loop":1,"pixi":26}],58:[function(require,module,exports){
 /* global module */
 
 'use strict';
@@ -1840,12 +1894,13 @@ module.exports = WebPong;
 module.exports = {
 	barsWidth: 15,
 	linesDistance: 20,
-	playerMargin: 10
+	playerMargin: 10,
+	scoresMargin: { x: 30, y: 30 }
 };
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /* global require */
 
 window.WebPong = require('./WebPong');
 
-},{"./WebPong":56}]},{},[58])
+},{"./WebPong":57}]},{},[59])
 ;
