@@ -2065,11 +2065,14 @@ Ball = function (game, options) {
     this.size = options.size || defaults.size;
     this.speed = options.speed || defaults.speed;
     this.lastUpdate = new Date().getTime();
+    this.removed = false;
 
     this.velocity = {
         x: this.speed,
         y: this.speed
     };
+
+    this.graphics = new pixi.Graphics();
 
     this.render();
     this.bind();
@@ -2079,20 +2082,25 @@ Ball.prototype.bind = function () {
     var self = this;
 
     this.game.events.on('update', function () {
-        self.update();
+        if (!this.removed) {
+            self.update();
+        }
     });
 
     this.game.events.on('resize', function () {
-        self.updatePosition();
+        if (!this.removed) {
+            self.updatePosition();
+        }
     });
 
     this.game.events.on('reset', function () {
-        self.reset();
+        if (!this.removed) {
+            self.reset();
+        }
     });
 };
 
 Ball.prototype.render = function () {
-    this.graphics = new pixi.Graphics();
     this.graphics.beginFill(0xFFFFFF, 1);
     this.graphics.drawCircle(0, 0, this.size);
     this.graphics.endFill();
@@ -2100,6 +2108,16 @@ Ball.prototype.render = function () {
     this.game.stage.addChild(this.graphics);
 
     this.updatePosition();
+};
+
+Ball.prototype.refresh = function () {
+    this.graphics.clear();
+    this.render();
+};
+
+Ball.prototype.setSize = function (size) {
+    this.size = size;
+    this.refresh();
 };
 
 Ball.prototype.updatePosition = function () {
@@ -2113,9 +2131,11 @@ Ball.prototype.updatePosition = function () {
 };
 
 Ball.prototype.update = function () {
-    this.updatePosition();
-    this.lastUpdate = new Date().getTime();
-    this.checkCollisions();
+    if (!this.removed) {
+        this.updatePosition();
+        this.lastUpdate = new Date().getTime();
+        this.checkCollisions();
+    }
 };
 
 Ball.prototype.getBoundingBox = function () {
@@ -2172,6 +2192,7 @@ Ball.prototype.checkPlayerCollision = function (player) {
         targetBB = player.getBoundingBox();
 
     if (BB.intersectsRect(targetBB)) {
+        player.events.emit('touch', [ this ]);
 
         if (player.side === 'left') {
             this.bounce(1, 0);
@@ -2181,6 +2202,11 @@ Ball.prototype.checkPlayerCollision = function (player) {
 
         return true;
     }
+};
+
+Ball.prototype.remove = function () {
+    this.graphics.clear();
+    this.removed = true;
 };
 
 Ball.prototype.bounce = function (multiplyX, multiplyY) {
@@ -2650,6 +2676,16 @@ WebPong.prototype.resize = function () {
 
 WebPong.prototype.reset = function () {
     this.events.emit('reset', [ this ]);
+    this.resetBalls();
+};
+
+WebPong.prototype.resetBalls = function () {
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].remove();
+    }
+
+    this.balls = [];
+    this.addBall();
 };
 
 module.exports = WebPong;

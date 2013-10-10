@@ -74,6 +74,16 @@ WebPong.prototype.resize = function () {
 
 WebPong.prototype.reset = function () {
     this.events.emit('reset', [ this ]);
+    this.resetBalls();
+};
+
+WebPong.prototype.resetBalls = function () {
+    for (var i = 0; i < this.balls.length; i += 1) {
+        this.balls[i].remove();
+    }
+
+    this.balls = [];
+    this.addBall();
 };
 
 module.exports = WebPong;
