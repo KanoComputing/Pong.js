@@ -7,6 +7,7 @@ var pixi = require('pixi'),
     Player = require('./Player'),
     Ball = require('./Ball'),
     Arena = require('./Arena'),
+    StartScreen = require('./StartScreen'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -18,15 +19,16 @@ WebPong = function (wrapper) {
     this.loop = new Loop();
     this.balls = [];
     this.arena = new Arena(this);
+    this.startScreen = new StartScreen(this);
 
     this.players = {
         a: new Player(this, {
             side: 'left',
-            controls: { up: 'up', down: 'down' }
+            controls: { up: 'w', down: 's' }
         }),
         b: new Player(this, {
             side: 'right',
-            controls: { up: 'w', down: 's' }
+            controls: { up: 'up', down: 'down' }
         })
     };
 
@@ -36,17 +38,13 @@ WebPong = function (wrapper) {
         self.update();
     });
 
-    this.initScreen();
+    this.startScreen.show();
+    this.update();
 
     wrapper.appendChild(this.renderer.view);
 };
 
-WebPong.prototype.initScreen = function () {
-    this.update();
-};
-
 WebPong.prototype.addBall = function () {
-    console.log('fds');
     this.balls.push(new Ball(this));
 };
 
@@ -75,6 +73,7 @@ WebPong.prototype.resize = function () {
 
     this.renderer.resize(width, height);
     this.arena.resize();
+    this.startScreen.resize();
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {

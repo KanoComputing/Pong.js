@@ -1334,7 +1334,7 @@ Arena.prototype.resize = function () {
 
 module.exports = Arena;
 
-},{"./config":56,"pixi":26}],52:[function(require,module,exports){
+},{"./config":57,"pixi":26}],52:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1476,7 +1476,7 @@ Ball.prototype.reset = function () {
 
 module.exports = Ball;
 
-},{"./config":56,"geometry":3,"pixi":26}],53:[function(require,module,exports){
+},{"./config":57,"geometry":3,"pixi":26}],53:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1672,7 +1672,64 @@ Player.prototype.addPoint = function () {
 
 module.exports = Player;
 
-},{"./Keyboard":53,"./config":56,"geometry":3,"pixi":26}],55:[function(require,module,exports){
+},{"./Keyboard":53,"./config":57,"geometry":3,"pixi":26}],55:[function(require,module,exports){
+/* global module, require */
+
+'use strict';
+
+var StartScreen,
+    pixi = require('pixi'),
+    keycode = require('keycode');
+
+StartScreen = function (game) {
+    this.game = game;
+    this.drawStartMessage();
+    this.bind();
+};
+
+StartScreen.prototype.bind = function () {
+    var self = this;
+
+    document.addEventListener('keydown', function (e) {
+        if (keycode(e.keyCode) === 'enter') {
+            self.hide();
+            self.game.start();
+        }
+    });
+};
+
+StartScreen.prototype.drawStartMessage = function () {
+    this.startMsg = new pixi.Text('PRESS ENTER', {
+        font: '60px Bariol',
+        fill: 'white',
+        align: 'right'
+    });
+
+    this.hide();
+    this.game.stage.addChild(this.startMsg);
+};
+
+StartScreen.prototype.resize = function () {
+    this.startMsg.position = {
+        x: this.game.renderer.width / 2,
+        y: this.game.renderer.height / 2
+    };
+    this.startMsg.anchor = { x: 0.5, y: 0.5 };
+};
+
+StartScreen.prototype.hide = function () {
+    this.visible = false;
+    this.startMsg.visible = false;
+};
+
+StartScreen.prototype.show = function () {
+    this.visible = true;
+    this.startMsg.visible = true;
+};
+
+module.exports = StartScreen;
+
+},{"keycode":4,"pixi":26}],56:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1682,6 +1739,7 @@ var pixi = require('pixi'),
     Player = require('./Player'),
     Ball = require('./Ball'),
     Arena = require('./Arena'),
+    StartScreen = require('./StartScreen'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -1693,15 +1751,16 @@ WebPong = function (wrapper) {
     this.loop = new Loop();
     this.balls = [];
     this.arena = new Arena(this);
+    this.startScreen = new StartScreen(this);
 
     this.players = {
         a: new Player(this, {
             side: 'left',
-            controls: { up: 'up', down: 'down' }
+            controls: { up: 'w', down: 's' }
         }),
         b: new Player(this, {
             side: 'right',
-            controls: { up: 'w', down: 's' }
+            controls: { up: 'up', down: 'down' }
         })
     };
 
@@ -1711,17 +1770,13 @@ WebPong = function (wrapper) {
         self.update();
     });
 
-    this.initScreen();
+    this.startScreen.show();
+    this.update();
 
     wrapper.appendChild(this.renderer.view);
 };
 
-WebPong.prototype.initScreen = function () {
-    this.update();
-};
-
 WebPong.prototype.addBall = function () {
-    console.log('fds');
     this.balls.push(new Ball(this));
 };
 
@@ -1750,6 +1805,7 @@ WebPong.prototype.resize = function () {
 
     this.renderer.resize(width, height);
     this.arena.resize();
+    this.startScreen.resize();
 
     for (var player in this.players) {
         if (this.players.hasOwnProperty(player)) {
@@ -1776,7 +1832,7 @@ WebPong.prototype.reset = function () {
 
 module.exports = WebPong;
 
-},{"./Arena":51,"./Ball":52,"./Player":54,"game-loop":1,"pixi":26}],56:[function(require,module,exports){
+},{"./Arena":51,"./Ball":52,"./Player":54,"./StartScreen":55,"game-loop":1,"pixi":26}],57:[function(require,module,exports){
 /* global module */
 
 'use strict';
@@ -1786,10 +1842,10 @@ module.exports = {
 	linesDistance: 20,
 	playerMargin: 10
 };
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /* global require */
 
 window.WebPong = require('./WebPong');
 
-},{"./WebPong":55}]},{},[57])
+},{"./WebPong":56}]},{},[58])
 ;
