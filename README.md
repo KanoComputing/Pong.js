@@ -53,7 +53,8 @@ pong.events.on('update', function () {
 
 ```javascript
 
-var pong = require('pong.js');
+var Pong = require('pong.js'),
+	pong = new Pong(document.getElementById('wrapper'));
 
 
 // Add keyboard controls for player A
