@@ -77,7 +77,7 @@ pong.events.on('update', function () {
 
 # Development
 
-## Global Dependencies
+### Global Dependencies
 
 * Browserify `npm install -g browserify`
 * Watchify `npm install -g watchify`
