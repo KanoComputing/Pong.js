@@ -1,7 +1,7 @@
 {
-  "name": "web-pong",
+  "name": "pong.js",
   "version": "0.0.0",
-  "description": "HTML5 Pong",
+  "description": "Configurable HTML5 Pong game for the browser",
   "main": "src/Pong.js",
   "scripts": {
     "build": "browserify src/index.js -o build/Pong.js",
@@ -15,6 +15,10 @@
     "event-emitter": "~0.2.2",
     "deep-extend": "~0.2.6",
     "npm": "~1.3.11"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:KanoComputing/Pong.js.git"
   },
   "author": "Tancredi Trugenberger",
   "license": "BSD-2-Clause"
