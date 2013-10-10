@@ -27,7 +27,7 @@ Player = function (game, options) {
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
     this.score = 0;
-    this.scoreDispay = new ScoreDisplay(this);
+    this.scoreDisplay = new ScoreDisplay(this);
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -117,12 +117,12 @@ Player.prototype.screenY = function () {
 Player.prototype.updatePosition = function () {
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
-    this.scoreDispay.updatePosition();
+    this.scoreDisplay.updatePosition();
 };
 
 Player.prototype.resize = function () {
     this.updatePosition();
-    this.scoreDispay.resize();
+    this.scoreDisplay.resize();
 };
 
 Player.prototype.getBoundingBox = function () {
@@ -138,6 +138,7 @@ Player.prototype.reset = function () {
 
 Player.prototype.addPoint = function () {
     this.score += 1;
+    this.scoreDisplay.update();
 };
 
 module.exports = Player;
