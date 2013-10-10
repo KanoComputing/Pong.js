@@ -29,6 +29,23 @@ Ball = function (game, options) {
     };
 
     this.render();
+    this.bind();
+};
+
+Ball.prototype.bind = function () {
+    var self = this;
+
+    this.game.events.on('update', function () {
+        self.update();
+    });
+
+    this.game.events.on('resize', function () {
+        self.updatePosition();
+    });
+
+    this.game.events.on('reset', function () {
+        self.reset();
+    });
 };
 
 Ball.prototype.render = function () {

@@ -8,6 +8,7 @@ var pixi = require('pixi'),
     Ball = require('./Ball'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
+    EventEmitter = require('event-emitter'),
     WebPong;
 
 WebPong = function (wrapper) {
@@ -18,6 +19,7 @@ WebPong = function (wrapper) {
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
     this.balls = [];
+    this.events = new EventEmitter();
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
 
@@ -51,20 +53,18 @@ WebPong.prototype.addBall = function () {
 WebPong.prototype.start = function () {
     this.addBall();
     this.loop.play();
+    this.events.emit('start', [ this ]);
+};
+
+WebPong.prototype.stop = function () {
+    this.loop.stop();
+    this.events.emit('start', [ this ]);
 };
 
 WebPong.prototype.update = function () {
     this.renderer.render(this.stage);
 
-    for (var player in this.players) {
-        if (this.players.hasOwnProperty(player)) {
-            this.players[player].update();
-        }
-    }
-
-    for (var i = 0; i < this.balls.length; i += 1) {
-        this.balls[i].update();
-    }
+    this.events.emit('update', [ this ]);
 };
 
 WebPong.prototype.resize = function () {
@@ -72,32 +72,14 @@ WebPong.prototype.resize = function () {
         height = this.wrapper.clientHeight;
 
     this.renderer.resize(width, height);
-    this.arena.resize();
-    this.startScreen.resize();
 
-    for (var player in this.players) {
-        if (this.players.hasOwnProperty(player)) {
-            this.players[player].resize();
-        }
-    }
-
-    for (var i = 0; i < this.balls.length; i += 1) {
-        this.balls[i].updatePosition();
-    }
+    this.events.emit('resize', [ width, height, this ]);
 
     this.renderer.render(this.stage);
 };
 
 WebPong.prototype.reset = function () {
-    for (var key in this.players) {
-        if (this.players.hasOwnProperty(key)) {
-            this.players[key].reset();
-        }
-    }
-
-    for (var i = 0; i < this.balls.length; i += 1) {
-        this.balls[i].reset();
-    }
+    this.events.emit('reset', [ this ]);
 };
 
 module.exports = WebPong;

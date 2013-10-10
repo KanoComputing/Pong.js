@@ -15,9 +15,20 @@ StartScreen = function (game) {
 StartScreen.prototype.bind = function () {
     var self = this;
 
+    this.game.events.on('start', function () {
+        self.hide();
+    });
+
+    this.game.events.on('stop', function () {
+        self.show();
+    });
+
+    this.game.events.on('resize', function () {
+        self.resize();
+    });
+
     document.addEventListener('keydown', function (e) {
         if (keycode(e.keyCode) === 'enter') {
-            self.hide();
             self.game.start();
         }
     });

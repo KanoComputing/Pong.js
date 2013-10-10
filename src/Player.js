@@ -38,8 +38,24 @@ Player = function (game, options) {
     this.game.stage.addChild(this.graphics);
 
     this.render();
-    this.update();
+    this.bind();
     this.updatePosition();
+};
+
+Player.prototype.bind = function () {
+    var self = this;
+
+    this.game.events.on('update', function () {
+        self.update();
+    });
+
+    this.game.events.on('resize', function () {
+        self.resize();
+    });
+
+    this.game.events.on('reset', function () {
+        self.reset();
+    });
 };
 
 Player.prototype.render = function () {
@@ -79,17 +95,6 @@ Player.prototype.move = function (direction) {
     this.y = newY;
 };
 
-Player.prototype.updatePosition = function () {
-    this.graphics.position.x = this.screenX();
-    this.graphics.position.y = this.screenY();
-    this.scoreDispay.updatePosition();
-};
-
-Player.prototype.resize = function () {
-    this.updatePosition();
-    this.scoreDispay.resize();
-};
-
 Player.prototype.screenX = function () {
     var stageWidth = this.game.renderer.width,
         spacing = config.linesDistance + config.playerMargin;
@@ -105,16 +110,21 @@ Player.prototype.screenY = function () {
     return this.y + this.game.renderer.height / 2 - this.height / 2;
 };
 
+Player.prototype.updatePosition = function () {
+    this.graphics.position.x = this.screenX();
+    this.graphics.position.y = this.screenY();
+    this.scoreDispay.updatePosition();
+};
+
+Player.prototype.resize = function () {
+    this.updatePosition();
+    this.scoreDispay.resize();
+};
+
 Player.prototype.getBoundingBox = function () {
     return new geometry.Rect(
-        {
-            x: this.screenX(),
-            y: this.screenY()
-        },
-        {
-            width: this.width,
-            height: this.height
-        }
+        { x: this.screenX(), y: this.screenY() },
+        { width: this.width, height: this.height }
     );
 };
 

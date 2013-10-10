@@ -10,6 +10,15 @@ Arena = function (game) {
     this.game = game;
 
     this.drawLines();
+    this.bind();
+};
+
+Arena.prototype.bind = function () {
+    var self = this;
+
+    this.game.events.on('resize', function () {
+        self.resize();
+    });
 };
 
 Arena.prototype.getLinePositions = function () {
