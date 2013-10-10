@@ -12,7 +12,8 @@
     "keycode": "~0.3.0",
     "game-loop": "0.0.0",
     "geometry": "~0.1.0",
-    "event-emitter": "~0.2.2"
+    "event-emitter": "~0.2.2",
+    "deep-extend": "~0.2.6"
   },
   "author": "Tancredi Trugenberger",
   "license": "BSD-2-Clause"

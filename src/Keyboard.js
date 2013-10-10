@@ -3,6 +3,7 @@
 'use strict';
 
 var keycode = require('keycode'),
+    extend = require('deep-extend'),
     Keyboard;
 
 function normaliseControls (controls) {
@@ -24,15 +25,30 @@ function normaliseControls (controls) {
 
 Keyboard = function (controls) {
     this.pressed = {};
-    this.controls = normaliseControls(controls);
+    this.controls = {};
+    this.addControls(controls);
+    this.bind();
+};
 
-    for (var key in this.controls) {
-        if (this.controls.hasOwnProperty(key)) {
-            this.pressed[key] = false;
+Keyboard.prototype.addControls = function (controls) {
+    var hasControl, key;
+
+    controls = normaliseControls(controls);
+
+    for (key in controls) {
+        if (this.controls.hasOwnProperty(key) && this.controls[key]) {
+            this.controls[key] = this.controls[key].concat(controls[key]);
+        } else {
+            this.controls[key] = controls[key];
         }
     }
 
-    this.bind();
+    for (key in this.controls) {
+        hasControl = this.pressed.hasOwnProperty(key);
+        if (this.controls.hasOwnProperty(key) && !hasControl) {
+            this.pressed[key] = false;
+        }
+    }
 };
 
 Keyboard.prototype.bind = function () {

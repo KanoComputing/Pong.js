@@ -24,14 +24,8 @@ WebPong = function (wrapper) {
     this.startScreen = new StartScreen(this);
 
     this.players = {
-        a: new Player(this, {
-            side: 'left',
-            controls: { up: 'w', down: 's' }
-        }),
-        b: new Player(this, {
-            side: 'right',
-            controls: { up: 'up', down: 'down' }
-        })
+        a: new Player(this, { side: 'left' }),
+        b: new Player(this, { side: 'right' })
     };
 
     this.resize();

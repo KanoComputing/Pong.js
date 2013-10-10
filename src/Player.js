@@ -41,6 +41,10 @@ Player = function (game, options) {
     this.updatePosition();
 };
 
+Player.prototype.addControls = function (controls) {
+    this.keyboard.addControls(controls);
+};
+
 Player.prototype.bind = function () {
     var self = this;
 

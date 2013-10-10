@@ -13,15 +13,24 @@
 			var pong = new WebPong(document.getElementById('pong'));
 
 			function resize () {
-				var h = window.innerHeight - 40;
-				document.getElementById('pong').style.height = h + 'px';
+				var gameHeight = window.innerHeight - 40 + 'px';
+				document.getElementById('pong').style.height = gameHeight;
 
 				pong.resize();
 			}
 
 			resize();
-
 			window.onresize = resize;
+
+			pong.players.a.addControls({
+				'up': 'w',
+				'down': 's',
+			});
+
+			pong.players.b.addControls({
+				'up': 'up',
+				'down': 'down',
+			});
 		};
 
 	</script>
