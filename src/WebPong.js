@@ -47,18 +47,18 @@ WebPong.prototype.addBall = function () {
 WebPong.prototype.start = function () {
     this.addBall();
     this.loop.play();
-    this.events.emit('start', [ this ]);
+    this.events.emit('start', this);
 };
 
 WebPong.prototype.stop = function () {
     this.loop.stop();
-    this.events.emit('start', [ this ]);
+    this.events.emit('start', this);
 };
 
 WebPong.prototype.update = function () {
     this.renderer.render(this.stage);
 
-    this.events.emit('update', [ this ]);
+    this.events.emit('update', this);
 };
 
 WebPong.prototype.resize = function () {
@@ -67,13 +67,13 @@ WebPong.prototype.resize = function () {
 
     this.renderer.resize(width, height);
 
-    this.events.emit('resize', [ width, height, this ]);
+    this.events.emit('resize', width, height, this);
 
     this.renderer.render(this.stage);
 };
 
 WebPong.prototype.reset = function () {
-    this.events.emit('reset', [ this ]);
+    this.events.emit('reset', this);
     this.resetBalls();
 };
 
@@ -84,6 +84,21 @@ WebPong.prototype.resetBalls = function () {
 
     this.balls = [];
     this.addBall();
+};
+
+WebPong.prototype.setBackgroundColor = function (color) {
+    this.stage.setBackgroundColor('0x' + color.substr(1));
+    this.update();
+};
+
+WebPong.prototype.setTextColor = function (color) {
+    this.events.emit('setTextColor', color);
+    this.update();
+};
+
+WebPong.prototype.setLinesColor = function (color) {
+    this.events.emit('setLinesColor', color);
+    this.update();
 };
 
 module.exports = WebPong;

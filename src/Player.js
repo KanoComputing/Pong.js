@@ -30,6 +30,7 @@ Player = function (game, options) {
     this.score = 0;
     this.events = new EventEmitter();
     this.scoreDisplay = new ScoreDisplay(this);
+    this.color = config.PLAYER_COLOR;
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -64,7 +65,7 @@ Player.prototype.bind = function () {
 };
 
 Player.prototype.render = function () {
-    this.graphics.beginFill(0xFFFFFF, 1);
+    this.graphics.beginFill(this.color, 1);
     this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
 };
@@ -140,7 +141,7 @@ Player.prototype.reset = function () {
 
 Player.prototype.addPoint = function () {
     this.score += 1;
-    this.events.emit('point', [ this.score ]);
+    this.events.emit('point', this.score);
 };
 
 Player.prototype.refresh = function () {
@@ -151,6 +152,12 @@ Player.prototype.refresh = function () {
 Player.prototype.setHeight = function (height) {
     this.height = height;
     this.refresh();
+};
+
+Player.prototype.setColor = function (color) {
+    this.color = '0x' + color.substr(1);
+    this.refresh();
+    this.game.update();
 };
 
 module.exports = Player;

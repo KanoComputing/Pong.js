@@ -4,6 +4,7 @@
 
 var pixi = require('pixi'),
     config = require('./config'),
+    extend = require('deep-extend'),
     ScoreDisplay;
 
 ScoreDisplay = function (player) {
@@ -18,13 +19,19 @@ ScoreDisplay.prototype.bind = function () {
     this.player.events.on('point', function () {
         self.update();
     });
+
+    this.player.game.events.on('setTextColor', function (color) {
+        self.setTextColor(color);
+    });
+};
+
+ScoreDisplay.prototype.setTextColor = function (color) {
+    var style = extend(config.TEXT_STYLE, { fill: color });
+    this.text.setStyle(style);
 };
 
 ScoreDisplay.prototype.render = function () {
-    this.text = new pixi.Text(this.player.score + '', {
-        font: '60px Bariol',
-        fill: 'white'
-    });
+    this.text = new pixi.Text(this.player.score + '', config.TEXT_STYLE);
 
     if (this.player.side === 'left') {
         this.text.anchor.x = 1;

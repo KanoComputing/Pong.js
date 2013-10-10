@@ -4,7 +4,9 @@
 
 var StartScreen,
     pixi = require('pixi'),
-    keycode = require('keycode');
+    keycode = require('keycode'),
+    config = require('./config'),
+    extend = require('deep-extend');
 
 StartScreen = function (game) {
     this.game = game;
@@ -27,6 +29,10 @@ StartScreen.prototype.bind = function () {
         self.resize();
     });
 
+    this.game.events.on('setTextColor', function (color) {
+        self.setTextColor(color);
+    });
+
     document.addEventListener('keydown', function (e) {
         if (keycode(e.keyCode) === 'enter') {
             self.game.start();
@@ -35,14 +41,16 @@ StartScreen.prototype.bind = function () {
 };
 
 StartScreen.prototype.drawStartMessage = function () {
-    this.startMsg = new pixi.Text('PRESS ENTER', {
-        font: '60px Bariol',
-        fill: 'white',
-        align: 'center'
-    });
+    this.startMsg = new pixi.Text('PRESS ENTER', config.TEXT_STYLE);
 
     this.hide();
     this.game.stage.addChild(this.startMsg);
+};
+
+StartScreen.prototype.setTextColor = function (color) {
+    var style = extend(config.TEXT_STYLE, { fill: color });
+    this.startMsg.setStyle(style);
+    this.game.update();
 };
 
 StartScreen.prototype.resize = function () {

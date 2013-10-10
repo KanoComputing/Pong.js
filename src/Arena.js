@@ -8,6 +8,7 @@ var config = require('./config'),
 
 Arena = function (game) {
     this.game = game;
+    this.linesColor = config.LINES_COLOR;
 
     this.drawLines();
     this.bind();
@@ -19,6 +20,15 @@ Arena.prototype.bind = function () {
     this.game.events.on('resize', function () {
         self.resize();
     });
+
+    this.game.events.on('setLinesColor', function (color) {
+        self.setLinesColor(color);
+    });
+};
+
+Arena.prototype.setLinesColor = function (color) {
+    this.linesColor = '0x' + color.substr(1);
+    this.updateLines();
 };
 
 Arena.prototype.getLinePositions = function () {
@@ -45,7 +55,7 @@ Arena.prototype.updateLines = function () {
 
     for (var i = 0; i < positions.length; i += 1) {
         this.lines[i].clear();
-        this.lines[i].beginFill(0xFFFFFF, 1);
+        this.lines[i].beginFill(this.linesColor, 1);
         this.lines[i].drawRect(0, 0, 1, this.game.renderer.height);
         this.lines[i].endFill();
         this.lines[i].position.x = positions[i];
