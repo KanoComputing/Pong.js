@@ -2595,7 +2595,9 @@ StartScreen.prototype.bind = function () {
 
     document.addEventListener('keydown', function (e) {
         if (keycode(e.keyCode) === 'enter') {
-            self.game.start();
+            if (!self.game.loop.playing) {
+                self.game.start();
+            }
         }
     });
 };
