@@ -1,0 +1,23 @@
+
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	min-height: 100%;
+	background: #222;
+	color: #666;
+	text-align: center;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
+
+#pong {
+	width: 100%;
+	height: 100%;
+}
+
+.panel {
+	margin-top: 14px;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Pong - Two players</title>
+
+	<script type="text/javascript" src="../build/web-pong.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="styles.css">
+
+	<script type="text/javascript">
+
+		window.onload = function () {
+			var pong = new WebPong(document.getElementById('pong'));
+
+			function resize () {
+				var h = window.innerHeight - 40;
+				document.getElementById('pong').style.height = h + 'px';
+
+				pong.resize();
+			}
+
+			resize();
+
+			window.onresize = resize;
+		};
+
+	</script>
+
+</head>
+<body>
+
+	<div id="pong"></div>
+
+	<div class="panel">
+		Control both paddles width [W], [S] and [UP], [DOWN]
+	</div>
+
+</body>
+</html>
