@@ -1289,6 +1289,7 @@ module.exports={console:global.console,document:global.document,location:global.
 
 var pixi = require('pixi'),
     geometry = require('geometry'),
+    config = require('./config'),
     defaults = {
         speed: 300,
         angle: 15,
@@ -1378,13 +1379,19 @@ Ball.prototype.checkWallsCollision = function () {
 
     if (BB.origin.y < 0) {
         this.bounce(0, 1);
-        return true;
     } else if (BB.getMax().y > this.game.renderer.height) {
         this.bounce(0, -1);
-        return true;
+    } else if (BB.origin.x < config.linesDistance) {
+        this.game.players.b.addPoint();
+        this.game.reset();
+    } else if (BB.origin.x > this.game.renderer.width - config.linesDistance) {
+        this.game.players.a.addPoint();
+        this.game.reset();
+    } else {
+        return false;
     }
 
-    return false;
+    return true;
 };
 
 Ball.prototype.checkPlayerCollision = function (player) {
@@ -1412,9 +1419,14 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
     }
 };
 
+Ball.prototype.reset = function () {
+    this.x = 0;
+    this.y = 0;
+};
+
 module.exports = Ball;
 
-},{"geometry":3,"pixi":26}],52:[function(require,module,exports){
+},{"./config":55,"geometry":3,"pixi":26}],52:[function(require,module,exports){
 /* global module, require */
 
 'use strict';
@@ -1516,6 +1528,7 @@ Player = function (game, options) {
     this.lastUpdate = new Date().getTime();
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
+    this.score = 0;
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -1593,6 +1606,14 @@ Player.prototype.getBoundingBox = function () {
             height: this.height
         }
     );
+};
+
+Player.prototype.reset = function () {
+    this.y = 0;
+};
+
+Player.prototype.addPoint = function () {
+    this.score += 1;
 };
 
 module.exports = Player;
@@ -1683,6 +1704,16 @@ WebPong.prototype.drawLines = function () {
         lines.beginFill(0xFFFFFF, 1);
         lines.drawRect(positions[i], 0, 1, this.renderer.height);
         lines.endFill();
+    }
+};
+
+WebPong.prototype.reset = function () {
+    this.ball.reset();
+
+    for (var key in this.players) {
+        if (this.players.hasOwnProperty(key)) {
+            this.players[key].reset();
+        }
     }
 };
 

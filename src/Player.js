@@ -26,6 +26,7 @@ Player = function (game, options) {
     this.lastUpdate = new Date().getTime();
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
+    this.score = 0;
 
     if (options.side !== 'left' && options.side !== 'right') {
         this.side = 'left';
@@ -103,6 +104,14 @@ Player.prototype.getBoundingBox = function () {
             height: this.height
         }
     );
+};
+
+Player.prototype.reset = function () {
+    this.y = 0;
+};
+
+Player.prototype.addPoint = function () {
+    this.score += 1;
 };
 
 module.exports = Player;

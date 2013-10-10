@@ -4,6 +4,7 @@
 
 var pixi = require('pixi'),
     geometry = require('geometry'),
+    config = require('./config'),
     defaults = {
         speed: 300,
         angle: 15,
@@ -93,13 +94,19 @@ Ball.prototype.checkWallsCollision = function () {
 
     if (BB.origin.y < 0) {
         this.bounce(0, 1);
-        return true;
     } else if (BB.getMax().y > this.game.renderer.height) {
         this.bounce(0, -1);
-        return true;
+    } else if (BB.origin.x < config.linesDistance) {
+        this.game.players.b.addPoint();
+        this.game.reset();
+    } else if (BB.origin.x > this.game.renderer.width - config.linesDistance) {
+        this.game.players.a.addPoint();
+        this.game.reset();
+    } else {
+        return false;
     }
 
-    return false;
+    return true;
 };
 
 Ball.prototype.checkPlayerCollision = function (player) {
@@ -125,6 +132,11 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
     if (multiplyY) {
         this.velocity.y = Math.abs(this.velocity.y) * multiplyY;
     }
+};
+
+Ball.prototype.reset = function () {
+    this.x = 0;
+    this.y = 0;
 };
 
 module.exports = Ball;

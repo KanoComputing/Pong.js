@@ -86,4 +86,14 @@ WebPong.prototype.drawLines = function () {
     }
 };
 
+WebPong.prototype.reset = function () {
+    this.ball.reset();
+
+    for (var key in this.players) {
+        if (this.players.hasOwnProperty(key)) {
+            this.players[key].reset();
+        }
+    }
+};
+
 module.exports = WebPong;
