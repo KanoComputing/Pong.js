@@ -157,7 +157,7 @@ Player.prototype.setHeight = function (height) {
 Player.prototype.setColor = function (color) {
     this.color = '0x' + color.substr(1);
     this.refresh();
-    this.game.update();
+    this.game.updateIfStill();
 };
 
 module.exports = Player;

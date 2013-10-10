@@ -50,7 +50,6 @@ StartScreen.prototype.drawStartMessage = function () {
 StartScreen.prototype.setTextColor = function (color) {
     var style = extend(config.TEXT_STYLE, { fill: color });
     this.startMsg.setStyle(style);
-    this.game.update();
 };
 
 StartScreen.prototype.resize = function () {

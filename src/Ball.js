@@ -167,6 +167,8 @@ Ball.prototype.remove = function () {
 };
 
 Ball.prototype.bounce = function (multiplyX, multiplyY) {
+    this.game.events.emit('bounce', this, multiplyX, multiplyY);
+
     if (multiplyX) {
         this.velocity.x = Math.abs(this.velocity.x) * multiplyX;
     }

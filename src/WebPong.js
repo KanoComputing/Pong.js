@@ -86,19 +86,25 @@ WebPong.prototype.resetBalls = function () {
     this.addBall();
 };
 
+WebPong.prototype.updateIfStill = function () {
+    if (!this.loop.playing) {
+        this.update();
+    }
+};
+
 WebPong.prototype.setBackgroundColor = function (color) {
     this.stage.setBackgroundColor('0x' + color.substr(1));
-    this.update();
+    this.updateIfStill();
 };
 
 WebPong.prototype.setTextColor = function (color) {
     this.events.emit('setTextColor', color);
-    this.update();
+    this.updateIfStill();
 };
 
 WebPong.prototype.setLinesColor = function (color) {
     this.events.emit('setLinesColor', color);
-    this.update();
+    this.updateIfStill();
 };
 
 module.exports = WebPong;
