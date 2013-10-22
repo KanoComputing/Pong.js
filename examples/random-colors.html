@@ -28,7 +28,7 @@
 
 			pong.players.b.speed = 280;
 
-			pong.events.on('update', function () {
+			pong.on('update', function () {
 				if (pong.balls.length) {
 					if (pong.players.b.y < pong.balls[0].y) {
 						pong.players.b.move(1);
@@ -46,17 +46,18 @@
 				pong.setBackgroundColor(randomColor());
 				pong.setTextStyle({ fill: '#2d3e50' });
 				pong.setLinesColor(randomColor());
+				pong.setBallColor(randomColor());
 				pong.players.a.setColor(randomColor());
 				pong.players.b.setColor(randomColor());
 			}
 
 			randomiseColors();
 
-			pong.events.on('bounce', function () {
+			pong.on('bounce', function () {
 				randomiseColors();
 			});
 
-			pong.players.b.events.on('touch', function () {
+			pong.players.b.on('touch', function () {
 				randomiseColors();
 			});
 		};

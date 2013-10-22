@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Pong.js - Bot vs Bot</title>
+	<title>Pong.js - Random Ball</title>
 
 	<script type="text/javascript" src="../build/Pong.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -35,7 +35,7 @@
 
 			pong.on('update', function () {
 
-				pong.players.a.speed = pong.players.b.speed = 250;
+				pong.players.a.speed = pong.players.b.speed = 800;
 
 				if (pong.players.b.y > pong.balls[0].y) {
 					pong.players.b.move(-1);
@@ -45,6 +45,22 @@
 					pong.players.b.move(1);
 				}
 
+			});
+
+			function randomColor () {
+				return '#' + Math.floor(Math.random() * 16777215).toString(16);
+			}
+
+			function randomiseBall () {
+				pong.setBallSize(Math.random() * 20 + 5);
+				pong.setBallSpeed(Math.random() * 900 + 200);
+				pong.setBallColor(randomColor());
+			}
+
+			randomiseBall();
+
+			pong.on('point', function () {
+				randomiseBall();
 			});
 
 			pong.start();
