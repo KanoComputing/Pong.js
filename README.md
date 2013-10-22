@@ -32,7 +32,7 @@ pong.players.a.addControls({
 });
 
 // Add behaviour for player B
-pong.events.on('update', function () {
+pong.on('update', function () {
 
 	if (pong.players.b.y < pong.balls[0].y) {
 		pong.players.b.move(1);
@@ -64,7 +64,7 @@ pong.players.a.addControls({
 });
 
 // Add behaviour for player B
-pong.events.on('update', function () {
+pong.on('update', function () {
 
 	if (pong.players.b.y < pong.balls[0].y) {
 		pong.players.b.move(1);
@@ -115,6 +115,8 @@ npm install
 * `setLinesColor([ string ])` - Set lines color using hexa string (`#xxxxxx`)
 * `setTextStyle([ object ])` - Set text style attributes (E.g. `font`, `fill`, `align`)
 * `addBall()` - Add a ball to the game
+* `on([ event ], [ callback ])` - Bind callback to a game event
+* `emit([ event ], [ params.. ])` - Emit a game event
 
 #### Properties
 
@@ -125,13 +127,8 @@ npm install
 * `wrapper` - Wrapping DOM element
 * `balls` - Array containing Ball objects
 * `loop` - GameLoop object
-* `events` - Game event emitter
 
 #### Events
-
-You can attach callbacks to game events by using a pong instance's `events` property.
-
-E.g. `pong.events.on('update', function () {});`
 
 * `start` - Triggered when game is started
 * `stop` - Triggered when game is stopped
@@ -151,6 +148,12 @@ E.g. `pong.events.on('update', function () {});`
 * `addPoint()` - Increse player score
 * `setHeight([ number ])` - Set paddle height
 * `setColor([ string ])` - Set paddle color using hexa string (`#xxxxxx`)
+* `on([ event ], [ callback ])` - Bind callback to a player event
+* `emit([ event ], [ params.. ])` - Emit a player event
+
+#### Events
+
+* `point` - Triggered when player scores a point
 
 #### Properties
 
