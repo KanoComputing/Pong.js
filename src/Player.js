@@ -48,15 +48,15 @@ Player.prototype.addControls = function (controls) {
 Player.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('update', function () {
+    this.game.on('update', function () {
         self.update();
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('reset', function () {
+    this.game.on('reset', function () {
         self.reset();
     });
 };

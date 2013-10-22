@@ -36,25 +36,25 @@ Ball = function (game, options) {
 Ball.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('update', function () {
+    this.game.on('update', function () {
         if (!self.removed) {
             self.update();
         }
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         if (!self.removed) {
             self.updatePosition();
         }
     });
 
-    this.game.events.on('reset', function () {
+    this.game.on('reset', function () {
         if (!self.removed) {
             self.reset();
         }
     });
 
-    this.game.events.on('setBallColor', function (color) {
+    this.game.on('setBallColor', function (color) {
         if (!self.removed) {
             self.setColor(color);
         }
@@ -171,7 +171,7 @@ Ball.prototype.remove = function () {
 };
 
 Ball.prototype.bounce = function (multiplyX, multiplyY) {
-    this.game.events.emit('bounce', this, multiplyX, multiplyY);
+    this.game.emit('bounce', this, multiplyX, multiplyY);
 
     if (multiplyX) {
         this.velocity.x = Math.abs(this.velocity.x) * multiplyX;

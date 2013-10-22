@@ -28,7 +28,7 @@
 
 			pong.players.b.speed = 280;
 
-			pong.events.on('update', function () {
+			pong.on('update', function () {
 				if (pong.balls.length) {
 					if (pong.players.b.y < pong.balls[0].y) {
 						pong.players.b.move(1);

@@ -14,19 +14,19 @@ StartScreen = function (game) {
 StartScreen.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('start', function () {
+    this.game.on('start', function () {
         self.hide();
     });
 
-    this.game.events.on('stop', function () {
+    this.game.on('stop', function () {
         self.show();
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('setTextStyle', function (color) {
+    this.game.on('setTextStyle', function (color) {
         self.setTextStyle(color);
     });
 

@@ -17,7 +17,7 @@ ScoreDisplay.prototype.bind = function () {
         self.update();
     });
 
-    this.player.game.events.on('setTextStyle', function (color) {
+    this.player.game.on('setTextStyle', function (color) {
         self.setTextStyle(color);
     });
 };

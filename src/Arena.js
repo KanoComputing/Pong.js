@@ -14,11 +14,11 @@ Arena = function (game) {
 Arena.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('setLinesColor', function (color) {
+    this.game.on('setLinesColor', function (color) {
         self.setLinesColor(color);
     });
 };

@@ -21,7 +21,7 @@
 			resize();
 			window.onresize = resize;
 
-			pong.events.on('update', function () {
+			pong.on('update', function () {
 
 				if (pong.players.a.y > pong.balls[0].y) {
 					pong.players.a.move(-1);
@@ -33,7 +33,7 @@
 
 			});
 
-			pong.events.on('update', function () {
+			pong.on('update', function () {
 
 				pong.players.a.speed = pong.players.b.speed = 250;
 

@@ -1996,11 +1996,11 @@ Arena = function (game) {
 Arena.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('setLinesColor', function (color) {
+    this.game.on('setLinesColor', function (color) {
         self.setLinesColor(color);
     });
 };
@@ -2086,25 +2086,25 @@ Ball = function (game, options) {
 Ball.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('update', function () {
+    this.game.on('update', function () {
         if (!self.removed) {
             self.update();
         }
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         if (!self.removed) {
             self.updatePosition();
         }
     });
 
-    this.game.events.on('reset', function () {
+    this.game.on('reset', function () {
         if (!self.removed) {
             self.reset();
         }
     });
 
-    this.game.events.on('setBallColor', function (color) {
+    this.game.on('setBallColor', function (color) {
         if (!self.removed) {
             self.setColor(color);
         }
@@ -2221,7 +2221,7 @@ Ball.prototype.remove = function () {
 };
 
 Ball.prototype.bounce = function (multiplyX, multiplyY) {
-    this.game.events.emit('bounce', this, multiplyX, multiplyY);
+    this.game.emit('bounce', this, multiplyX, multiplyY);
 
     if (multiplyX) {
         this.velocity.x = Math.abs(this.velocity.x) * multiplyX;
@@ -2380,15 +2380,15 @@ Player.prototype.addControls = function (controls) {
 Player.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('update', function () {
+    this.game.on('update', function () {
         self.update();
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('reset', function () {
+    this.game.on('reset', function () {
         self.reset();
     });
 };
@@ -2506,12 +2506,13 @@ var pixi = require('pixi'),
 Pong = function (wrapper) {
     var self = this;
 
+    EventEmitter.call(this);
+
     this.wrapper = wrapper;
     this.stage = new pixi.Stage(config.BG_COLOR);
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
     this.balls = [];
-    this.events = new EventEmitter();
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
 
@@ -2532,6 +2533,8 @@ Pong = function (wrapper) {
     wrapper.appendChild(this.renderer.view);
 };
 
+Pong.prototype = new EventEmitter();
+
 Pong.prototype.addBall = function () {
     this.balls.push(new Ball(this));
 };
@@ -2539,18 +2542,18 @@ Pong.prototype.addBall = function () {
 Pong.prototype.start = function () {
     this.addBall();
     this.loop.play();
-    this.events.emit('start', this);
+    this.emit('start', this);
 };
 
 Pong.prototype.stop = function () {
     this.loop.stop();
-    this.events.emit('stop', this);
+    this.emit('stop', this);
 };
 
 Pong.prototype.update = function () {
     this.renderer.render(this.stage);
 
-    this.events.emit('update', this);
+    this.emit('update', this);
 };
 
 Pong.prototype.updateIfStill = function () {
@@ -2565,13 +2568,13 @@ Pong.prototype.resize = function () {
 
     this.renderer.resize(width, height);
 
-    this.events.emit('resize', width, height, this);
+    this.emit('resize', width, height, this);
 
     this.renderer.render(this.stage);
 };
 
 Pong.prototype.reset = function () {
-    this.events.emit('reset', this);
+    this.emit('reset', this);
     this.resetBalls();
 };
 
@@ -2590,16 +2593,16 @@ Pong.prototype.setBackgroundColor = function (color) {
 };
 
 Pong.prototype.setLinesColor = function (color) {
-    this.events.emit('setLinesColor', color);
+    this.emit('setLinesColor', color);
     this.updateIfStill();
 };
 
 Pong.prototype.setBallColor = function (color) {
-    this.events.emit('setBallColor', color);
+    this.emit('setBallColor', color);
 };
 
 Pong.prototype.setTextStyle = function (style) {
-    this.events.emit('setTextStyle', style);
+    this.emit('setTextStyle', style);
     this.updateIfStill();
 };
 
@@ -2625,7 +2628,7 @@ ScoreDisplay.prototype.bind = function () {
         self.update();
     });
 
-    this.player.game.events.on('setTextStyle', function (color) {
+    this.player.game.on('setTextStyle', function (color) {
         self.setTextStyle(color);
     });
 };
@@ -2685,19 +2688,19 @@ StartScreen = function (game) {
 StartScreen.prototype.bind = function () {
     var self = this;
 
-    this.game.events.on('start', function () {
+    this.game.on('start', function () {
         self.hide();
     });
 
-    this.game.events.on('stop', function () {
+    this.game.on('stop', function () {
         self.show();
     });
 
-    this.game.events.on('resize', function () {
+    this.game.on('resize', function () {
         self.resize();
     });
 
-    this.game.events.on('setTextStyle', function (color) {
+    this.game.on('setTextStyle', function (color) {
         self.setTextStyle(color);
     });
 
