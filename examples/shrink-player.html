@@ -36,7 +36,7 @@
 				}
 			});
 
-			pong.players.a.events.on('point', function () {
+			pong.players.a.on('point', function () {
 				var h = pong.players.b.height - 20;
 				if (h < 10) {
 					h = 10
@@ -44,7 +44,7 @@
 				pong.players.b.setHeight(h);
 			});
 
-			pong.players.b.events.on('point', function () {
+			pong.players.b.on('point', function () {
 				var h = pong.players.a.height - 20;
 				if (h < 10) {
 					h = 10
