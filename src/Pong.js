@@ -53,7 +53,7 @@ Pong.prototype.start = function () {
 
 Pong.prototype.stop = function () {
     this.loop.stop();
-    this.events.emit('start', this);
+    this.events.emit('stop', this);
 };
 
 Pong.prototype.update = function () {

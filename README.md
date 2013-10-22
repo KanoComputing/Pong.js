@@ -125,6 +125,18 @@ npm install
 * `wrapper` - Wrapping DOM element
 * `balls` - Array containing Ball objects
 * `loop` - GameLoop object
+* `events` - Game event emitter
+
+#### Events
+
+You can attach callbacks to game events by using a pong instance's `events` property.
+
+E.g. `pong.events.on('update', function () {});`
+
+* `start` - Triggered when game is started
+* `stop` - Triggered when game is stopped
+* `update` - Triggered after every gameloop iteration
+* `resize` - Triggered when the game is resized
 
 ## Player class
 
