@@ -11,6 +11,7 @@
 * [Player vs Bot »](http://kanocomputing.github.io/Pong.js/examples/player-vs-bot.html)
 * [Player vs Player »](http://kanocomputing.github.io/Pong.js/examples/player-vs-player.html)
 * [Bot vs Bot »](http://kanocomputing.github.io/Pong.js/examples/bot-vs-bot.html)
+* [Random ball »](http://kanocomputing.github.io/Pong.js/examples/random-ball.html)
 * [Random balls »](http://kanocomputing.github.io/Pong.js/examples/random-balls.html)
 * [Custom colors »](http://kanocomputing.github.io/Pong.js/examples/custom-colors.html)
 * [Random colors »](http://kanocomputing.github.io/Pong.js/examples/random-colors.html)
