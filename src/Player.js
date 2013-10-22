@@ -1,6 +1,3 @@
-/* global module, require */
-
-'use strict';
 
 var pixi = require('pixi'),
     config = require('./config'),

@@ -1,6 +1,3 @@
-/* global module */
-
-'use strict';
 
 module.exports = {
 	BG_COLOR: 0x222222,

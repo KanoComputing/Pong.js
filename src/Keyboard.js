@@ -1,9 +1,5 @@
-/* global module, require */
-
-'use strict';
 
 var keycode = require('keycode'),
-    extend = require('deep-extend'),
     Keyboard;
 
 function normaliseControls (controls) {
