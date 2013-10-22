@@ -1,6 +1,7 @@
 
 var config = require('./config'),
     pixi = require('pixi'),
+    parseOctal = require('./utils').parseOctal,
     Arena;
 
 Arena = function (game) {
@@ -24,7 +25,7 @@ Arena.prototype.bind = function () {
 };
 
 Arena.prototype.setLinesColor = function (color) {
-    this.linesColor = '0x' + color.substr(1);
+    this.linesColor = parseOctal(color);
     this.updateLines();
 };
 

@@ -5,6 +5,7 @@ var pixi = require('pixi'),
     ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     EventEmitter = require('event-emitter'),
+    parseOctal = require('./utils').parseOctal,
     defaults = {
         barHeight: 100,
         controls: {
@@ -142,6 +143,7 @@ Player.prototype.reset = function () {
 Player.prototype.addPoint = function () {
     this.score += 1;
     this.emit('point', this.score);
+    this.game.emit('point', this);
 };
 
 Player.prototype.refresh = function () {
@@ -155,7 +157,7 @@ Player.prototype.setHeight = function (height) {
 };
 
 Player.prototype.setColor = function (color) {
-    this.color = '0x' + color.substr(1);
+    this.color = parseOctal(color);
     this.refresh();
     this.game.updateIfStill();
 };

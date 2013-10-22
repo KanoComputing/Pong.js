@@ -2,10 +2,7 @@
 var pixi = require('pixi'),
     geometry = require('geometry'),
     config = require('./config'),
-    defaults = {
-        speed: 300,
-        size: 10
-    },
+    parseOctal = require('./utils').parseOctal,
     Ball;
 
 Ball = function (game, options) {
@@ -16,19 +13,13 @@ Ball = function (game, options) {
     this.game =  game;
     this.x = options.x || 0;
     this.y = options.y || 0;
-    this.size = options.size || defaults.size;
-    this.speed = options.speed || defaults.speed;
+    this.size = options.size || config.BALL_SIZE;
+    this.setSpeed(options.speed || config.BALL_SPEED);
     this.lastUpdate = new Date().getTime();
     this.removed = false;
-    this.color = config.BALL_COLOR;
-
-    this.velocity = {
-        x: this.speed,
-        y: this.speed
-    };
+    this.color = parseOctal(options.color) || config.BALL_COLOR;
 
     this.graphics = new pixi.Graphics();
-
     this.render();
     this.bind();
 };
@@ -59,6 +50,18 @@ Ball.prototype.bind = function () {
             self.setColor(color);
         }
     });
+
+    this.game.on('setBallSize', function (size) {
+        if (!self.removed) {
+            self.setSize(size);
+        }
+    });
+
+    this.game.on('setBallSpeed', function (speed) {
+        if (!self.removed) {
+            self.setSpeed(speed);
+        }
+    });
 };
 
 Ball.prototype.render = function () {
@@ -74,11 +77,6 @@ Ball.prototype.render = function () {
 Ball.prototype.refresh = function () {
     this.graphics.clear();
     this.render();
-};
-
-Ball.prototype.setSize = function (size) {
-    this.size = size;
-    this.refresh();
 };
 
 Ball.prototype.updatePosition = function () {
@@ -187,9 +185,22 @@ Ball.prototype.reset = function () {
 };
 
 Ball.prototype.setColor = function (color) {
-    this.color = '0x' + color.substr(1);
-    this.graphics.clear();
-    this.render();
+    this.color = parseOctal(color);
+    this.refresh();
+};
+
+Ball.prototype.setSize = function (size) {
+    this.size = size;
+    this.refresh();
+};
+
+Ball.prototype.setSpeed = function (speed) {
+    this.speed = speed;
+
+    this.velocity = {
+        x: this.speed,
+        y: this.speed
+    };
 };
 
 module.exports = Ball;

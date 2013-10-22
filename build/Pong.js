@@ -1983,6 +1983,7 @@ module.exports={console:global.console,document:global.document,location:global.
 
 var config = require('./config'),
     pixi = require('pixi'),
+    parseOctal = require('./utils').parseOctal,
     Arena;
 
 Arena = function (game) {
@@ -2006,7 +2007,7 @@ Arena.prototype.bind = function () {
 };
 
 Arena.prototype.setLinesColor = function (color) {
-    this.linesColor = '0x' + color.substr(1);
+    this.linesColor = parseOctal(color);
     this.updateLines();
 };
 
@@ -2047,15 +2048,12 @@ Arena.prototype.resize = function () {
 
 module.exports = Arena;
 
-},{"./config":82,"pixi":50}],76:[function(require,module,exports){
+},{"./config":82,"./utils":84,"pixi":50}],76:[function(require,module,exports){
 
 var pixi = require('pixi'),
     geometry = require('geometry'),
     config = require('./config'),
-    defaults = {
-        speed: 300,
-        size: 10
-    },
+    parseOctal = require('./utils').parseOctal,
     Ball;
 
 Ball = function (game, options) {
@@ -2066,19 +2064,13 @@ Ball = function (game, options) {
     this.game =  game;
     this.x = options.x || 0;
     this.y = options.y || 0;
-    this.size = options.size || defaults.size;
-    this.speed = options.speed || defaults.speed;
+    this.size = options.size || config.BALL_SIZE;
+    this.setSpeed(options.speed || config.BALL_SPEED);
     this.lastUpdate = new Date().getTime();
     this.removed = false;
-    this.color = config.BALL_COLOR;
-
-    this.velocity = {
-        x: this.speed,
-        y: this.speed
-    };
+    this.color = parseOctal(options.color) || config.BALL_COLOR;
 
     this.graphics = new pixi.Graphics();
-
     this.render();
     this.bind();
 };
@@ -2109,6 +2101,18 @@ Ball.prototype.bind = function () {
             self.setColor(color);
         }
     });
+
+    this.game.on('setBallSize', function (size) {
+        if (!self.removed) {
+            self.setSize(size);
+        }
+    });
+
+    this.game.on('setBallSpeed', function (speed) {
+        if (!self.removed) {
+            self.setSpeed(speed);
+        }
+    });
 };
 
 Ball.prototype.render = function () {
@@ -2124,11 +2128,6 @@ Ball.prototype.render = function () {
 Ball.prototype.refresh = function () {
     this.graphics.clear();
     this.render();
-};
-
-Ball.prototype.setSize = function (size) {
-    this.size = size;
-    this.refresh();
 };
 
 Ball.prototype.updatePosition = function () {
@@ -2237,14 +2236,27 @@ Ball.prototype.reset = function () {
 };
 
 Ball.prototype.setColor = function (color) {
-    this.color = '0x' + color.substr(1);
-    this.graphics.clear();
-    this.render();
+    this.color = parseOctal(color);
+    this.refresh();
+};
+
+Ball.prototype.setSize = function (size) {
+    this.size = size;
+    this.refresh();
+};
+
+Ball.prototype.setSpeed = function (speed) {
+    this.speed = speed;
+
+    this.velocity = {
+        x: this.speed,
+        y: this.speed
+    };
 };
 
 module.exports = Ball;
 
-},{"./config":82,"geometry":27,"pixi":50}],77:[function(require,module,exports){
+},{"./config":82,"./utils":84,"geometry":27,"pixi":50}],77:[function(require,module,exports){
 
 var keycode = require('keycode'),
     Keyboard;
@@ -2337,6 +2349,7 @@ var pixi = require('pixi'),
     ScoreDisplay = require('./ScoreDisplay'),
     geometry = require('geometry'),
     EventEmitter = require('event-emitter'),
+    parseOctal = require('./utils').parseOctal,
     defaults = {
         barHeight: 100,
         controls: {
@@ -2474,6 +2487,7 @@ Player.prototype.reset = function () {
 Player.prototype.addPoint = function () {
     this.score += 1;
     this.emit('point', this.score);
+    this.game.emit('point', this);
 };
 
 Player.prototype.refresh = function () {
@@ -2487,7 +2501,7 @@ Player.prototype.setHeight = function (height) {
 };
 
 Player.prototype.setColor = function (color) {
-    this.color = '0x' + color.substr(1);
+    this.color = parseOctal(color);
     this.refresh();
     this.game.updateIfStill();
 };
@@ -2498,7 +2512,7 @@ Player.prototype.setY = function (y) {
 
 module.exports = Player;
 
-},{"./Keyboard":77,"./ScoreDisplay":80,"./config":82,"event-emitter":5,"geometry":27,"pixi":50}],79:[function(require,module,exports){
+},{"./Keyboard":77,"./ScoreDisplay":80,"./config":82,"./utils":84,"event-emitter":5,"geometry":27,"pixi":50}],79:[function(require,module,exports){
 
 var pixi = require('pixi'),
     Loop = require('game-loop'),
@@ -2508,6 +2522,13 @@ var pixi = require('pixi'),
     StartScreen = require('./StartScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
+    extend = require('deep-extend'),
+    parseOctal = require('./utils').parseOctal,
+    ballDefaults = {
+        color: config.BALL_COLOR,
+        size: config.BALL_SIZE,
+        speed: config.BALL_SPEED
+    },
     Pong;
 
 Pong = function (wrapper) {
@@ -2521,6 +2542,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.hits = 0;
+    this.ballSettings = extend({}, ballDefaults);
 
     this.players = {
         a: new Player(this, { side: 'left' }),
@@ -2550,7 +2572,11 @@ Pong.prototype.bind = function () {
 };
 
 Pong.prototype.addBall = function () {
-    this.balls.push(new Ball(this));
+    this.balls.push(new Ball(this, {
+        color: this.ballSettings.color,
+        size: this.ballSettings.size,
+        speed: this.ballSettings.speed
+    }));
 };
 
 Pong.prototype.start = function () {
@@ -2603,7 +2629,7 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor('0x' + color.substr(1));
+    this.stage.setBackgroundColor(parseOctal(color));
     this.updateIfStill();
 };
 
@@ -2612,18 +2638,29 @@ Pong.prototype.setLinesColor = function (color) {
     this.updateIfStill();
 };
 
-Pong.prototype.setBallColor = function (color) {
-    this.emit('setBallColor', color);
-};
-
 Pong.prototype.setTextStyle = function (style) {
     this.emit('setTextStyle', style);
     this.updateIfStill();
 };
 
+Pong.prototype.setBallColor = function (color) {
+    this.ballSettings.color = color;
+    this.emit('setBallColor', color);
+};
+
+Pong.prototype.setBallSize = function (size) {
+    this.ballSettings.size = size;
+    this.emit('setBallSize', size);
+};
+
+Pong.prototype.setBallSpeed = function (speed) {
+    this.ballSettings.speed = speed;
+    this.emit('setBallSpeed', speed);
+};
+
 module.exports = Pong;
 
-},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":81,"./config":82,"event-emitter":5,"game-loop":25,"pixi":50}],80:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":81,"./config":82,"./utils":84,"deep-extend":1,"event-emitter":5,"game-loop":25,"pixi":50}],80:[function(require,module,exports){
 
 var pixi = require('pixi'),
     config = require('./config'),
@@ -2775,11 +2812,25 @@ module.exports = {
         align: 'center'
     },
     LINES_COLOR: 0xEEEEEE,
-    BALL_COLOR: 0xFFFFFF
+    BALL_COLOR: 0xEEEEEE,
+    BALL_SIZE: 10,
+    BALL_SPEED: 300
 };
 },{}],83:[function(require,module,exports){
 
 window.Pong = require('./Pong');
 
-},{"./Pong":79}]},{},[83])
+},{"./Pong":79}],84:[function(require,module,exports){
+
+module.exports = {
+
+    parseOctal: function (color) {
+        if (typeof color === 'string') {
+            color = '0x' + color.substr(1);
+        }
+        return color;
+    }
+
+};
+},{}]},{},[83])
 ;

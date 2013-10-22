@@ -7,6 +7,13 @@ var pixi = require('pixi'),
     StartScreen = require('./StartScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
+    extend = require('deep-extend'),
+    parseOctal = require('./utils').parseOctal,
+    ballDefaults = {
+        color: config.BALL_COLOR,
+        size: config.BALL_SIZE,
+        speed: config.BALL_SPEED
+    },
     Pong;
 
 Pong = function (wrapper) {
@@ -20,6 +27,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.hits = 0;
+    this.ballSettings = extend({}, ballDefaults);
 
     this.players = {
         a: new Player(this, { side: 'left' }),
@@ -49,7 +57,11 @@ Pong.prototype.bind = function () {
 };
 
 Pong.prototype.addBall = function () {
-    this.balls.push(new Ball(this));
+    this.balls.push(new Ball(this, {
+        color: this.ballSettings.color,
+        size: this.ballSettings.size,
+        speed: this.ballSettings.speed
+    }));
 };
 
 Pong.prototype.start = function () {
@@ -102,7 +114,7 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor('0x' + color.substr(1));
+    this.stage.setBackgroundColor(parseOctal(color));
     this.updateIfStill();
 };
 
@@ -111,13 +123,24 @@ Pong.prototype.setLinesColor = function (color) {
     this.updateIfStill();
 };
 
-Pong.prototype.setBallColor = function (color) {
-    this.emit('setBallColor', color);
-};
-
 Pong.prototype.setTextStyle = function (style) {
     this.emit('setTextStyle', style);
     this.updateIfStill();
+};
+
+Pong.prototype.setBallColor = function (color) {
+    this.ballSettings.color = color;
+    this.emit('setBallColor', color);
+};
+
+Pong.prototype.setBallSize = function (size) {
+    this.ballSettings.size = size;
+    this.emit('setBallSize', size);
+};
+
+Pong.prototype.setBallSpeed = function (speed) {
+    this.ballSettings.speed = speed;
+    this.emit('setBallSpeed', speed);
 };
 
 module.exports = Pong;

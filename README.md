@@ -114,6 +114,9 @@ npm install
 * `setBackgroundColor([ string ])` - Set background color using hexa string (`#xxxxxx`)
 * `setLinesColor([ string ])` - Set lines color using hexa string (`#xxxxxx`)
 * `setTextStyle([ object ])` - Set text style attributes (E.g. `font`, `fill`, `align`)
+* `setBallColor([ string ])` - Set the color of balls currently on stage and future ones
+* `setBallSize([ number ])` - Set the size of balls currently on stage and future ones
+* `setBallSpeed([ number ])` - Set the speed of balls currently on stage and future ones
 * `addBall()` - Add a ball to the game
 * `on([ event ], [ callback ])` - Bind callback to a game event
 * `emit([ event ], [ params.. ])` - Emit a game event
@@ -134,6 +137,12 @@ npm install
 * `stop` - Triggered when game is stopped
 * `update` - Triggered after every gameloop iteration
 * `resize` - Triggered when the game is resized
+* `point` - Triggered by every player when a point is scored
+* `setLinesColor` - Used by UI children, triggered when `.setLinesColor` is called
+* `setTextStyle` - Used by UI children, triggered when `.setTextStyle` is called
+* `setBallColor` - Used by Ball instances, triggered when `.setBallColor` is called
+* `setBallSize` - Used by Ball instances, triggered when `.setBallSize` is called
+* `setBallSpeed` - Used by Ball instances, triggered when `.setBallSpeed` is called
 
 ## Player class
 
