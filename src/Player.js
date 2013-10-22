@@ -160,4 +160,8 @@ Player.prototype.setColor = function (color) {
     this.game.updateIfStill();
 };
 
+Player.prototype.setY = function (y) {
+    this.y = y;
+};
+
 module.exports = Player;

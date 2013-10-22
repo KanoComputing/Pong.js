@@ -111,7 +111,7 @@ npm install
 * `updateIfStill()` - Only update if gameloop not running
 * `resize()` - Resize accordingly to wrapper size. Use for responsive implementations
 * `reset()` - Reset paddles positions, scores and balls
-* `setBackgroundColor([ string ]) - Set background color using hexa string (`#xxxxxx`)
+* `setBackgroundColor([ string ])` - Set background color using hexa string (`#xxxxxx`)
 * `setLinesColor([ string ])` - Set lines color using hexa string (`#xxxxxx`)
 * `setTextStyle([ object ])` - Set text style attributes (E.g. `font`, `fill`, `align`)
 * `addBall()` - Add a ball to the game
@@ -147,6 +147,7 @@ npm install
 * `reset()` - Reset player position
 * `addPoint()` - Increse player score
 * `setHeight([ number ])` - Set paddle height
+* `setY([ number ])` - Set player Y position
 * `setColor([ string ])` - Set paddle color using hexa string (`#xxxxxx`)
 * `on([ event ], [ callback ])` - Bind callback to a player event
 * `emit([ event ], [ params.. ])` - Emit a player event

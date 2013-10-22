@@ -10,8 +10,6 @@ var pixi = require('pixi'),
     Pong;
 
 Pong = function (wrapper) {
-    var self = this;
-
     EventEmitter.call(this);
 
     this.wrapper = wrapper;
@@ -21,6 +19,7 @@ Pong = function (wrapper) {
     this.balls = [];
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
+    this.hits = 0;
 
     this.players = {
         a: new Player(this, { side: 'left' }),
@@ -28,11 +27,7 @@ Pong = function (wrapper) {
     };
 
     this.resize();
-
-    this.loop.use(function () {
-        self.update();
-    });
-
+    this.bind();
     this.startScreen.show();
     this.update();
 
@@ -40,6 +35,18 @@ Pong = function (wrapper) {
 };
 
 Pong.prototype = new EventEmitter();
+
+Pong.prototype.bind = function () {
+    var self = this;
+
+    this.loop.use(function () {
+        self.update();
+    });
+
+    this.on('bounce', function () {
+        self.hits += 1;
+    });
+};
 
 Pong.prototype.addBall = function () {
     this.balls.push(new Ball(this));
@@ -81,6 +88,7 @@ Pong.prototype.resize = function () {
 
 Pong.prototype.reset = function () {
     this.emit('reset', this);
+    this.hits = 0;
     this.resetBalls();
 };
 
