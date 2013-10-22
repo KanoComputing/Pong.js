@@ -18,7 +18,7 @@
   },
   "repository": {
     "type" : "git",
-    "url" : "git@github.com:KanoComputing/Pong.js.git"
+    "url" : "https://github.com/KanoComputing/Pong.js.git"
   },
   "author": "Tancredi Trugenberger",
   "license": "BSD-2-Clause"
