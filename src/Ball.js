@@ -153,7 +153,7 @@ Ball.prototype.checkPlayerCollision = function (player) {
         targetBB = player.getBoundingBox();
 
     if (BB.intersectsRect(targetBB)) {
-        player.events.emit('touch', [ this ]);
+        player.emit('touch', [ this ]);
 
         if (player.side === 'left') {
             this.bounce(1, 0);

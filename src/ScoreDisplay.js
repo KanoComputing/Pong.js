@@ -13,7 +13,7 @@ ScoreDisplay = function (player) {
 ScoreDisplay.prototype.bind = function () {
     var self = this;
 
-    this.player.events.on('point', function () {
+    this.player.on('point', function () {
         self.update();
     });
 

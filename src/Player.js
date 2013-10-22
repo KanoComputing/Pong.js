@@ -16,6 +16,8 @@ var pixi = require('pixi'),
     Player;
 
 Player = function (game, options) {
+    EventEmitter.call(this);
+
     this.game = game;
     this.side = options.side;
     this.width = config.BARS_WIDTH;
@@ -25,7 +27,6 @@ Player = function (game, options) {
     this.keyboard = new Keyboard(options.controls || defaults.controls);
     this.y = 0;
     this.score = 0;
-    this.events = new EventEmitter();
     this.scoreDisplay = new ScoreDisplay(this);
     this.color = config.PLAYER_COLOR;
 
@@ -40,6 +41,8 @@ Player = function (game, options) {
     this.bind();
     this.updatePosition();
 };
+
+Player.prototype = new EventEmitter();
 
 Player.prototype.addControls = function (controls) {
     this.keyboard.addControls(controls);
@@ -138,7 +141,7 @@ Player.prototype.reset = function () {
 
 Player.prototype.addPoint = function () {
     this.score += 1;
-    this.events.emit('point', this.score);
+    this.emit('point', this.score);
 };
 
 Player.prototype.refresh = function () {
