@@ -136,6 +136,10 @@ npm install
 * `wrapper` - Wrapping DOM element
 * `balls` - Array containing Ball objects
 * `loop` - GameLoop object
+* `bounces` - Number of ball bounces since last point
+* `totalBounces` - Number of ball bounces since the start of the current game
+* `hits` - Number of times a player hit the ball since last point
+* `totalHits` - Number of times a player hit the ball since the start of the current game
 
 #### Events
 
@@ -151,6 +155,8 @@ npm install
 * `setBallColor` - Used by Ball instances, triggered when `.setBallColor` is called
 * `setBallSize` - Used by Ball instances, triggered when `.setBallSize` is called
 * `setBallSpeed` - Used by Ball instances, triggered when `.setBallSpeed` is called
+* `bounce` - Fired every time a ball bounces
+* `hit` - Fired every time a ball hits a player
 
 ## Player class
 
@@ -172,6 +178,7 @@ npm install
 #### Events
 
 * `point` - Triggered when player scores a point
+* `hit` - Triggered when player hits a ball
 
 #### Properties
 

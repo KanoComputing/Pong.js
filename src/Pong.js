@@ -30,6 +30,9 @@ Pong = function (wrapper) {
     this.startScreen = new StartScreen(this);
     this.pauseScreen = new PauseScreen(this);
     this.hits = 0;
+    this.totalHits = 0;
+    this.bounces = 0;
+    this.totalBounces = 0;
     this.ballSettings = extend({}, ballDefaults);
     this.started = false;
 
@@ -56,7 +59,13 @@ Pong.prototype.bind = function () {
     });
 
     this.on('bounce', function () {
+        self.bounces += 1;
+        self.totalBounces += 1;
+    });
+
+    this.on('hit', function () {
         self.hits += 1;
+        self.totalHits += 1;
     });
 
     document.addEventListener('keydown', function (e) {
@@ -137,6 +146,7 @@ Pong.prototype.resize = function () {
 
 Pong.prototype.restart = function (addBall) {
     this.hits = 0;
+    this.bounces = 0;
     this.resetBalls();
 
     if (addBall) {
@@ -148,6 +158,8 @@ Pong.prototype.restart = function (addBall) {
 };
 
 Pong.prototype.reset = function () {
+    this.totalHits = 0;
+    this.totalBounces = 0;
     this.restart(false);
     this.pause();
     this.emit('reset', this);
