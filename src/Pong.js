@@ -5,10 +5,12 @@ var pixi = require('pixi'),
     Ball = require('./Ball'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
+    PauseScreen = require('./PauseScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
     extend = require('deep-extend'),
     parseOctal = require('./utils').parseOctal,
+    keycode = require('keycode'),
     ballDefaults = {
         color: config.BALL_COLOR,
         size: config.BALL_SIZE,
@@ -17,7 +19,7 @@ var pixi = require('pixi'),
     Pong;
 
 Pong = function (wrapper) {
-    EventEmitter.call(this);
+    EventEmitter.apply(this);
 
     this.wrapper = wrapper;
     this.stage = new pixi.Stage(config.BG_COLOR);
@@ -26,8 +28,10 @@ Pong = function (wrapper) {
     this.balls = [];
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
+    this.pauseScreen = new PauseScreen(this);
     this.hits = 0;
     this.ballSettings = extend({}, ballDefaults);
+    this.started = false;
 
     this.players = {
         a: new Player(this, { side: 'left' }),
@@ -54,6 +58,16 @@ Pong.prototype.bind = function () {
     this.on('bounce', function () {
         self.hits += 1;
     });
+
+    document.addEventListener('keydown', function (e) {
+        var key = keycode(e.keyCode);
+
+        if (key === 'p') {
+            self.togglePause();
+        } else if (key === ' esc' || key === 'r') {
+            self.reset();
+        }
+    });
 };
 
 Pong.prototype.addBall = function () {
@@ -67,18 +81,41 @@ Pong.prototype.addBall = function () {
 Pong.prototype.start = function () {
     this.addBall();
     this.loop.play();
+    this.started = true;
     this.emit('start', this);
 };
 
-Pong.prototype.stop = function () {
-    this.loop.stop();
-    this.emit('stop', this);
+Pong.prototype.pause = function () {
+    if (this.started) {
+        this.emit('pause', this);
+        this.loop.stop();
+    }
+};
+
+Pong.prototype.resume = function () {
+    if (this.started) {
+        this.emit('resume', this);
+        this.loop.play();
+    }
+};
+
+Pong.prototype.togglePause = function () {
+    if (!this.loop.playing) {
+        this.resume();
+    } else {
+        this.pause();
+    }
 };
 
 Pong.prototype.update = function () {
-    this.renderer.render(this.stage);
+    if (this.started) {
+        this.refresh();
+        this.emit('update', this);
+    }
+};
 
-    this.emit('update', this);
+Pong.prototype.refresh = function () {
+    this.renderer.render(this.stage);
 };
 
 Pong.prototype.updateIfStill = function () {
@@ -98,10 +135,24 @@ Pong.prototype.resize = function () {
     this.renderer.render(this.stage);
 };
 
-Pong.prototype.reset = function () {
-    this.emit('reset', this);
+Pong.prototype.restart = function (addBall) {
     this.hits = 0;
     this.resetBalls();
+
+    if (addBall) {
+        this.addBall();
+    }
+
+    this.emit('restart', this);
+    this.refresh();
+};
+
+Pong.prototype.reset = function () {
+    this.restart(false);
+    this.pause();
+    this.emit('reset', this);
+    this.started = false;
+    this.refresh();
 };
 
 Pong.prototype.resetBalls = function () {
@@ -110,7 +161,6 @@ Pong.prototype.resetBalls = function () {
     }
 
     this.balls = [];
-    this.addBall();
 };
 
 Pong.prototype.setBackgroundColor = function (color) {

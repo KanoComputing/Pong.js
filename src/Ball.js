@@ -39,12 +39,6 @@ Ball.prototype.bind = function () {
         }
     });
 
-    this.game.on('reset', function () {
-        if (!self.removed) {
-            self.reset();
-        }
-    });
-
     this.game.on('setBallColor', function (color) {
         if (!self.removed) {
             self.setColor(color);
@@ -60,6 +54,12 @@ Ball.prototype.bind = function () {
     this.game.on('setBallSpeed', function (speed) {
         if (!self.removed) {
             self.setSpeed(speed);
+        }
+    });
+
+    this.game.on('resume', function () {
+        if (!self.removed) {
+            self.lastUpdate = new Date().getTime();
         }
     });
 };
@@ -135,10 +135,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, -1);
     } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
-        this.game.reset();
+        this.game.restart(true);
     } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
-        this.game.reset();
+        this.game.restart(true);
     } else {
         return false;
     }
@@ -177,11 +177,6 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
     if (multiplyY) {
         this.velocity.y = Math.abs(this.velocity.y) * multiplyY;
     }
-};
-
-Ball.prototype.reset = function () {
-    this.x = 0;
-    this.y = 0;
 };
 
 Ball.prototype.setColor = function (color) {

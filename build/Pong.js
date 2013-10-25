@@ -720,17 +720,17 @@ Loop.prototype.use = function (callback) {
 };
 
 Loop.prototype.next = function () {
-  var self = this;
-
-  this.getFPS();
-
-  for (var i = 0; i < this.callbacks.length; i += 1) {
-    this.callbacks[i]();
-  }
-
-  this.frame+= 1;
-
   if (this.playing) {
+    var self = this;
+
+    this.getFPS();
+
+    for (var i = 0; i < this.callbacks.length; i += 1) {
+      this.callbacks[i]();
+    }
+
+    this.frame+= 1;
+
     requestAnimFrame(function () {
       self.next();
     });
@@ -2048,7 +2048,7 @@ Arena.prototype.resize = function () {
 
 module.exports = Arena;
 
-},{"./config":82,"./utils":84,"pixi":50}],76:[function(require,module,exports){
+},{"./config":84,"./utils":86,"pixi":50}],76:[function(require,module,exports){
 
 var pixi = require('pixi'),
     geometry = require('geometry'),
@@ -2090,12 +2090,6 @@ Ball.prototype.bind = function () {
         }
     });
 
-    this.game.on('reset', function () {
-        if (!self.removed) {
-            self.reset();
-        }
-    });
-
     this.game.on('setBallColor', function (color) {
         if (!self.removed) {
             self.setColor(color);
@@ -2111,6 +2105,12 @@ Ball.prototype.bind = function () {
     this.game.on('setBallSpeed', function (speed) {
         if (!self.removed) {
             self.setSpeed(speed);
+        }
+    });
+
+    this.game.on('resume', function () {
+        if (!self.removed) {
+            self.lastUpdate = new Date().getTime();
         }
     });
 };
@@ -2186,10 +2186,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, -1);
     } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
-        this.game.reset();
+        this.game.restart(true);
     } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
-        this.game.reset();
+        this.game.restart(true);
     } else {
         return false;
     }
@@ -2230,11 +2230,6 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
     }
 };
 
-Ball.prototype.reset = function () {
-    this.x = 0;
-    this.y = 0;
-};
-
 Ball.prototype.setColor = function (color) {
     this.color = parseOctal(color);
     this.refresh();
@@ -2256,7 +2251,7 @@ Ball.prototype.setSpeed = function (speed) {
 
 module.exports = Ball;
 
-},{"./config":82,"./utils":84,"geometry":27,"pixi":50}],77:[function(require,module,exports){
+},{"./config":84,"./utils":86,"geometry":27,"pixi":50}],77:[function(require,module,exports){
 
 var keycode = require('keycode'),
     Keyboard;
@@ -2343,6 +2338,99 @@ module.exports = Keyboard;
 
 },{"keycode":28}],78:[function(require,module,exports){
 
+var config = require('./config'),
+    extend = require('deep-extend'),
+    pixi = require('pixi'),
+    MessageScreen;
+
+MessageScreen = function (game) {
+    this.message = this.message || '';
+    this.game = game;
+    this.drawMessage();
+    this.bind();
+};
+
+MessageScreen.prototype.bind = function () {
+    var self = this;
+
+    this.game.on('setTextStyle', function (color) {
+        self.setTextStyle(color);
+    });
+
+    this.game.on('resize', function () {
+        self.resize();
+    });
+};
+
+MessageScreen.prototype.drawMessage = function () {
+    this.startMsg = new pixi.Text(this.message, config.TEXT_STYLE);
+
+    this.hide();
+    this.game.stage.addChild(this.startMsg);
+};
+
+MessageScreen.prototype.setTextStyle = function (style) {
+    style = extend(config.TEXT_STYLE, style);
+    this.startMsg.setStyle(style);
+};
+
+MessageScreen.prototype.resize = function () {
+    this.startMsg.position = {
+        x: this.game.renderer.width / 2,
+        y: this.game.renderer.height / 2
+    };
+    this.startMsg.anchor = { x: 0.5, y: 0.5 };
+};
+
+MessageScreen.prototype.hide = function () {
+    this.visible = false;
+    this.startMsg.visible = false;
+    this.game.refresh();
+};
+
+MessageScreen.prototype.show = function () {
+    this.visible = true;
+    this.startMsg.visible = true;
+    this.game.refresh();
+};
+
+
+module.exports = MessageScreen;
+
+},{"./config":84,"deep-extend":1,"pixi":50}],79:[function(require,module,exports){
+
+var MessageScreen = require('./MessageScreen'),
+    PauseScreen,
+
+PauseScreen = function () {
+    this.message = 'PAUSED';
+    MessageScreen.apply(this, arguments);
+};
+
+PauseScreen.prototype = Object.create(MessageScreen.prototype);
+
+PauseScreen.prototype.bind = function () {
+    var self = this;
+
+    MessageScreen.prototype.bind.apply(this, arguments);
+
+    this.game.on('pause', function () {
+        self.show();
+    });
+
+    this.game.on('resume', function () {
+        self.hide();
+    });
+
+    this.game.on('reset', function () {
+        self.hide();
+    });
+};
+
+module.exports = PauseScreen;
+
+},{"./MessageScreen":78}],80:[function(require,module,exports){
+
 var pixi = require('pixi'),
     config = require('./config'),
     Keyboard = require('./Keyboard'),
@@ -2361,7 +2449,7 @@ var pixi = require('pixi'),
     Player;
 
 Player = function (game, options) {
-    EventEmitter.call(this);
+    EventEmitter.apply(this);
 
     this.game = game;
     this.side = options.side;
@@ -2406,6 +2494,10 @@ Player.prototype.bind = function () {
 
     this.game.on('reset', function () {
         self.reset();
+    });
+
+    this.game.on('restart', function () {
+        self.restart();
     });
 };
 
@@ -2480,8 +2572,15 @@ Player.prototype.getBoundingBox = function () {
     );
 };
 
-Player.prototype.reset = function () {
+Player.prototype.restart = function () {
     this.y = 0;
+    this.update();
+};
+
+Player.prototype.reset = function () {
+    this.score = 0;
+    this.restart();
+    this.scoreDisplay.update();
 };
 
 Player.prototype.addPoint = function () {
@@ -2506,13 +2605,17 @@ Player.prototype.setColor = function (color) {
     this.game.updateIfStill();
 };
 
+Player.prototype.setSpeed = function (speed) {
+    this.speed = speed;
+};
+
 Player.prototype.setY = function (y) {
     this.y = y;
 };
 
 module.exports = Player;
 
-},{"./Keyboard":77,"./ScoreDisplay":80,"./config":82,"./utils":84,"event-emitter":5,"geometry":27,"pixi":50}],79:[function(require,module,exports){
+},{"./Keyboard":77,"./ScoreDisplay":82,"./config":84,"./utils":86,"event-emitter":5,"geometry":27,"pixi":50}],81:[function(require,module,exports){
 
 var pixi = require('pixi'),
     Loop = require('game-loop'),
@@ -2520,10 +2623,12 @@ var pixi = require('pixi'),
     Ball = require('./Ball'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
+    PauseScreen = require('./PauseScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
     extend = require('deep-extend'),
     parseOctal = require('./utils').parseOctal,
+    keycode = require('keycode'),
     ballDefaults = {
         color: config.BALL_COLOR,
         size: config.BALL_SIZE,
@@ -2532,7 +2637,7 @@ var pixi = require('pixi'),
     Pong;
 
 Pong = function (wrapper) {
-    EventEmitter.call(this);
+    EventEmitter.apply(this);
 
     this.wrapper = wrapper;
     this.stage = new pixi.Stage(config.BG_COLOR);
@@ -2541,8 +2646,10 @@ Pong = function (wrapper) {
     this.balls = [];
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
+    this.pauseScreen = new PauseScreen(this);
     this.hits = 0;
     this.ballSettings = extend({}, ballDefaults);
+    this.started = false;
 
     this.players = {
         a: new Player(this, { side: 'left' }),
@@ -2569,6 +2676,16 @@ Pong.prototype.bind = function () {
     this.on('bounce', function () {
         self.hits += 1;
     });
+
+    document.addEventListener('keydown', function (e) {
+        var key = keycode(e.keyCode);
+
+        if (key === 'p') {
+            self.togglePause();
+        } else if (key === ' esc' || key === 'r') {
+            self.reset();
+        }
+    });
 };
 
 Pong.prototype.addBall = function () {
@@ -2582,18 +2699,41 @@ Pong.prototype.addBall = function () {
 Pong.prototype.start = function () {
     this.addBall();
     this.loop.play();
+    this.started = true;
     this.emit('start', this);
 };
 
-Pong.prototype.stop = function () {
-    this.loop.stop();
-    this.emit('stop', this);
+Pong.prototype.pause = function () {
+    if (this.started) {
+        this.emit('pause', this);
+        this.loop.stop();
+    }
+};
+
+Pong.prototype.resume = function () {
+    if (this.started) {
+        this.emit('resume', this);
+        this.loop.play();
+    }
+};
+
+Pong.prototype.togglePause = function () {
+    if (!this.loop.playing) {
+        this.resume();
+    } else {
+        this.pause();
+    }
 };
 
 Pong.prototype.update = function () {
-    this.renderer.render(this.stage);
+    if (this.started) {
+        this.refresh();
+        this.emit('update', this);
+    }
+};
 
-    this.emit('update', this);
+Pong.prototype.refresh = function () {
+    this.renderer.render(this.stage);
 };
 
 Pong.prototype.updateIfStill = function () {
@@ -2613,10 +2753,24 @@ Pong.prototype.resize = function () {
     this.renderer.render(this.stage);
 };
 
-Pong.prototype.reset = function () {
-    this.emit('reset', this);
+Pong.prototype.restart = function (addBall) {
     this.hits = 0;
     this.resetBalls();
+
+    if (addBall) {
+        this.addBall();
+    }
+
+    this.emit('restart', this);
+    this.refresh();
+};
+
+Pong.prototype.reset = function () {
+    this.restart(false);
+    this.pause();
+    this.emit('reset', this);
+    this.started = false;
+    this.refresh();
 };
 
 Pong.prototype.resetBalls = function () {
@@ -2625,7 +2779,6 @@ Pong.prototype.resetBalls = function () {
     }
 
     this.balls = [];
-    this.addBall();
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
@@ -2660,7 +2813,7 @@ Pong.prototype.setBallSpeed = function (speed) {
 
 module.exports = Pong;
 
-},{"./Arena":75,"./Ball":76,"./Player":78,"./StartScreen":81,"./config":82,"./utils":84,"deep-extend":1,"event-emitter":5,"game-loop":25,"pixi":50}],80:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
 
 var pixi = require('pixi'),
     config = require('./config'),
@@ -2723,41 +2876,36 @@ ScoreDisplay.prototype.resize = function () {
 
 module.exports = ScoreDisplay;
 
-},{"./config":82,"deep-extend":1,"pixi":50}],81:[function(require,module,exports){
+},{"./config":84,"deep-extend":1,"pixi":50}],83:[function(require,module,exports){
 
-var StartScreen,
-    pixi = require('pixi'),
-    keycode = require('keycode'),
-    config = require('./config'),
-    extend = require('deep-extend');
+var keycode = require('keycode'),
+    MessageScreen = require('./MessageScreen'),
+    StartScreen,
 
-StartScreen = function (game) {
-    this.game = game;
-    this.drawStartMessage();
-    this.bind();
+StartScreen = function () {
+    this.message = 'PRESS ENTER';
+    MessageScreen.apply(this, arguments);
 };
+
+StartScreen.prototype = Object.create(MessageScreen.prototype);
 
 StartScreen.prototype.bind = function () {
     var self = this;
+
+    MessageScreen.prototype.bind.apply(this, arguments);
 
     this.game.on('start', function () {
         self.hide();
     });
 
-    this.game.on('stop', function () {
+    this.game.on('reset', function () {
         self.show();
     });
 
-    this.game.on('resize', function () {
-        self.resize();
-    });
-
-    this.game.on('setTextStyle', function (color) {
-        self.setTextStyle(color);
-    });
-
     document.addEventListener('keydown', function (e) {
-        if (keycode(e.keyCode) === 'enter') {
+        var key = keycode(e.keyCode);
+
+        if (key === 'enter') {
             if (!self.game.loop.playing) {
                 self.game.start();
             }
@@ -2765,39 +2913,9 @@ StartScreen.prototype.bind = function () {
     });
 };
 
-StartScreen.prototype.drawStartMessage = function () {
-    this.startMsg = new pixi.Text('PRESS ENTER', config.TEXT_STYLE);
-
-    this.hide();
-    this.game.stage.addChild(this.startMsg);
-};
-
-StartScreen.prototype.setTextStyle = function (style) {
-    style = extend(config.TEXT_STYLE, style);
-    this.startMsg.setStyle(style);
-};
-
-StartScreen.prototype.resize = function () {
-    this.startMsg.position = {
-        x: this.game.renderer.width / 2,
-        y: this.game.renderer.height / 2
-    };
-    this.startMsg.anchor = { x: 0.5, y: 0.5 };
-};
-
-StartScreen.prototype.hide = function () {
-    this.visible = false;
-    this.startMsg.visible = false;
-};
-
-StartScreen.prototype.show = function () {
-    this.visible = true;
-    this.startMsg.visible = true;
-};
-
 module.exports = StartScreen;
 
-},{"./config":82,"deep-extend":1,"keycode":28,"pixi":50}],82:[function(require,module,exports){
+},{"./MessageScreen":78,"keycode":28}],84:[function(require,module,exports){
 
 module.exports = {
 	BG_COLOR: 0x222222,
@@ -2816,11 +2934,11 @@ module.exports = {
     BALL_SIZE: 10,
     BALL_SPEED: 300
 };
-},{}],83:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 
 window.Pong = require('./Pong');
 
-},{"./Pong":79}],84:[function(require,module,exports){
+},{"./Pong":81}],86:[function(require,module,exports){
 
 module.exports = {
 
@@ -2832,5 +2950,5 @@ module.exports = {
     }
 
 };
-},{}]},{},[83])
+},{}]},{},[85])
 ;

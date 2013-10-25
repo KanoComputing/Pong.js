@@ -17,7 +17,7 @@ var pixi = require('pixi'),
     Player;
 
 Player = function (game, options) {
-    EventEmitter.call(this);
+    EventEmitter.apply(this);
 
     this.game = game;
     this.side = options.side;
@@ -62,6 +62,10 @@ Player.prototype.bind = function () {
 
     this.game.on('reset', function () {
         self.reset();
+    });
+
+    this.game.on('restart', function () {
+        self.restart();
     });
 };
 
@@ -136,8 +140,15 @@ Player.prototype.getBoundingBox = function () {
     );
 };
 
-Player.prototype.reset = function () {
+Player.prototype.restart = function () {
     this.y = 0;
+    this.update();
+};
+
+Player.prototype.reset = function () {
+    this.score = 0;
+    this.restart();
+    this.scoreDisplay.update();
 };
 
 Player.prototype.addPoint = function () {
@@ -160,6 +171,10 @@ Player.prototype.setColor = function (color) {
     this.color = parseOctal(color);
     this.refresh();
     this.game.updateIfStill();
+};
+
+Player.prototype.setSpeed = function (speed) {
+    this.speed = speed;
 };
 
 Player.prototype.setY = function (y) {

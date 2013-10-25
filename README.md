@@ -107,11 +107,16 @@ npm install
 #### Methods
 
 * `start()` - Start game
-* `stop()` - Stop game
+* `pause()` - Pause game (Showing pause screen)
+* `resume()` - Resume paused game
+* `togglePaused()` - Pause or resume game
+* `refresh()` - Re-render screen
 * `update()` - Run next frame in the gameloop
 * `updateIfStill()` - Only update if gameloop not running
 * `resize()` - Resize accordingly to wrapper size. Use for responsive implementations
-* `reset()` - Reset paddles positions, scores and balls
+* `resetBalls([ add_one ])` - Remove all balls, add one if `true` is passed
+* `restart()` - Reset position of players and ball
+* `reset()` - Reset game (Restore start screen, scores, ..)
 * `setBackgroundColor([ string ])` - Set background color using hexa string (`#xxxxxx`)
 * `setLinesColor([ string ])` - Set lines color using hexa string (`#xxxxxx`)
 * `setTextStyle([ object ])` - Set text style attributes (E.g. `font`, `fill`, `align`)
@@ -136,6 +141,8 @@ npm install
 
 * `start` - Triggered when game is started
 * `stop` - Triggered when game is stopped
+* `pause` - Triggered when game is paused
+* `resume` - Triggered when game is resumed
 * `update` - Triggered after every gameloop iteration
 * `resize` - Triggered when the game is resized
 * `point` - Triggered by every player when a point is scored
