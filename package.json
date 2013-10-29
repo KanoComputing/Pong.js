@@ -8,13 +8,13 @@
     "watch": "watchify src/index.js -o build/Pong.js"
   },
   "dependencies": {
-    "pixi": "0.1.x",
     "keycode": "0.3.x",
     "geometry": "0.1.x",
     "event-emitter": "0.2.x",
     "deep-extend": "0.2.x",
     "npm": "1.3.x",
-    "game-loop": "0.0.x"
+    "game-loop": "0.0.x",
+    "pixi": "~0.1.x"
   },
   "repository": {
     "type": "git",

@@ -196,6 +196,7 @@ npm install
 
 * `setSize([ number ])` - Set ball radius in pixels
 * `setColor([ string ])` - Set ball color using hexa string (`#xxxxxx`)
+* `rebound([ direction ])` - Reset ball position, pointing right when `direction` is positive, left when negative
 
 #### Properties
 

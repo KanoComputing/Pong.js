@@ -80,11 +80,14 @@ Pong.prototype.bind = function () {
 };
 
 Pong.prototype.addBall = function () {
-    this.balls.push(new Ball(this, {
+    var ball = new Ball(this, {
         color: this.ballSettings.color,
         size: this.ballSettings.size,
         speed: this.ballSettings.speed
-    }));
+    });
+
+    this.balls.push(ball);
+    return ball;
 };
 
 Pong.prototype.start = function () {
@@ -144,13 +147,16 @@ Pong.prototype.resize = function () {
     this.renderer.render(this.stage);
 };
 
-Pong.prototype.restart = function (addBall) {
+Pong.prototype.restart = function (addBall, dir) {
+    var ball;
+
     this.hits = 0;
     this.bounces = 0;
     this.resetBalls();
 
     if (addBall) {
-        this.addBall();
+        ball = this.addBall();
+        ball.rebound(dir || 0);
     }
 
     this.emit('restart', this);

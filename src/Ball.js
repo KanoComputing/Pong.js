@@ -1,4 +1,4 @@
-
+ 
 var pixi = require('pixi'),
     geometry = require('geometry'),
     config = require('./config'),
@@ -135,10 +135,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, -1);
     } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
-        this.game.restart(true);
+        this.game.restart(true, 0);
     } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
-        this.game.restart(true);
+        this.game.restart(true, 1);
     } else {
         return false;
     }
@@ -197,6 +197,11 @@ Ball.prototype.setSpeed = function (speed) {
         x: this.speed,
         y: this.speed
     };
+};
+
+Ball.prototype.rebound = function (dir) {
+    this.x = 0;
+    this.velocity.x = -this.velocity.x * (dir ? 1 : -1);
 };
 
 module.exports = Ball;
