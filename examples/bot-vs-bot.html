@@ -34,6 +34,7 @@
 			});
 
 			pong.on('update', function () {
+				window.i = ( window.i || 0 ) + 1
 
 				pong.players.a.speed = pong.players.b.speed = 250;
 

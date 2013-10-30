@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Pong.js - Framed</title>
+	<title>Pong.js - Faster Player</title>
 
 	<script type="text/javascript" src="../build/Pong.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -11,12 +11,20 @@
 		window.onload = function () {
 			var pong = new Pong(document.getElementById('pong'));
 
+			function resize () {
+				var gameHeight = window.innerHeight - 40 + 'px';
+				document.getElementById('pong').style.height = gameHeight;
+
+				pong.resize();
+			}
+
+			resize();
+			window.onresize = resize;
+
 			pong.players.a.addControls({
 				'up': 'up',
 				'down': 'down',
 			});
-			
-			pong.players.b.setSpeed(150);
 
 			pong.on('update', function () {
 				if (pong.players.b.y < pong.balls[0].y) {
@@ -25,6 +33,8 @@
 					pong.players.b.move(-1);
 				}
 			});
+
+			pong.players.a.setSpeed(1000);
 		};
 
 	</script>
@@ -32,7 +42,7 @@
 </head>
 <body>
 
-	<div id="pong" class="framed"></div>
+	<div id="pong"></div>
 
 	<div class="panel">
 		Move with [ UP ], [ DOWN ]

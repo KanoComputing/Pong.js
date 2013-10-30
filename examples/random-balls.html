@@ -51,11 +51,11 @@
 				pong.balls[pong.balls.length - 1].setSize(randRange(5, 30));
 			});
 
-			pong.players.a.on('touch', function () {
+			pong.players.a.on('hit', function () {
 				addBall();
 			});
 
-			pong.players.b.on('touch', function () {
+			pong.players.b.on('hit', function () {
 				addBall();
 			});
 		};
