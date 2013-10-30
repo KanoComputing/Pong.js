@@ -15,6 +15,8 @@
 				'up': 'up',
 				'down': 'down',
 			});
+			
+			pong.players.b.setSpeed(150);
 
 			pong.on('update', function () {
 				if (pong.players.b.y < pong.balls[0].y) {
