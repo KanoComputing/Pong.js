@@ -6,6 +6,7 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     PauseScreen = require('./PauseScreen'),
+    MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
     extend = require('deep-extend'),
@@ -29,6 +30,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.pauseScreen = new PauseScreen(this);
+    this.endScreen = new MessageScreen(this);
     this.hits = 0;
     this.totalHits = 0;
     this.bounces = 0;
@@ -75,6 +77,12 @@ Pong.prototype.bind = function () {
             self.togglePause();
         } else if (key === ' esc' || key === 'r') {
             self.reset();
+        } else if (key === 'enter' && self.won) {
+            self.reset();
+            self.won = false;
+            self.loop.play();
+            self.endScreen.hide();
+            self.start();
         }
     });
 };
@@ -209,6 +217,13 @@ Pong.prototype.setBallSize = function (size) {
 Pong.prototype.setBallSpeed = function (speed) {
     this.ballSettings.speed = speed;
     this.emit('setBallSpeed', speed);
+};
+
+Pong.prototype.win = function (message) {
+    this.loop.stop();
+    this.endScreen.setMessage(message);
+    this.endScreen.show();
+    this.won = true;
 };
 
 module.exports = Pong;

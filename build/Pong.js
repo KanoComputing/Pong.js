@@ -2375,6 +2375,10 @@ MessageScreen.prototype.drawMessage = function () {
     this.game.stage.addChild(this.startMsg);
 };
 
+MessageScreen.prototype.setMessage = function (message) {
+    this.startMsg.setText(message);
+};
+
 MessageScreen.prototype.setTextStyle = function (style) {
     style = extend(config.TEXT_STYLE, style);
     this.startMsg.setStyle(style);
@@ -2630,6 +2634,7 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     PauseScreen = require('./PauseScreen'),
+    MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
     extend = require('deep-extend'),
@@ -2653,6 +2658,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.pauseScreen = new PauseScreen(this);
+    this.endScreen = new MessageScreen(this);
     this.hits = 0;
     this.totalHits = 0;
     this.bounces = 0;
@@ -2699,6 +2705,12 @@ Pong.prototype.bind = function () {
             self.togglePause();
         } else if (key === ' esc' || key === 'r') {
             self.reset();
+        } else if (key === 'enter' && self.won) {
+            self.reset();
+            self.won = false;
+            self.loop.play();
+            self.endScreen.hide();
+            self.start();
         }
     });
 };
@@ -2835,9 +2847,16 @@ Pong.prototype.setBallSpeed = function (speed) {
     this.emit('setBallSpeed', speed);
 };
 
+Pong.prototype.win = function (message) {
+    this.loop.stop();
+    this.endScreen.setMessage(message);
+    this.endScreen.show();
+    this.won = true;
+};
+
 module.exports = Pong;
 
-},{"./Arena":75,"./Ball":76,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./MessageScreen":78,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
 
 var pixi = require('pixi'),
     config = require('./config'),
