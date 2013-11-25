@@ -15,7 +15,8 @@ var pixi = require('pixi'),
     ballDefaults = {
         color: config.BALL_COLOR,
         size: config.BALL_SIZE,
-        speed: config.BALL_SPEED
+        speed: config.BALL_SPEED,
+        velocity: [config.BALL_SPEED, config.BALL_SPEED]
     },
     Pong;
 
@@ -46,6 +47,7 @@ Pong = function (wrapper) {
     this.resize();
     this.bind();
     this.startScreen.show();
+    this.endScreen.hide();
     this.update();
 
     wrapper.appendChild(this.renderer.view);
@@ -75,8 +77,9 @@ Pong.prototype.bind = function () {
 
         if (key === 'p') {
             self.togglePause();
-        } else if (key === ' esc' || key === 'r') {
+        } else if (key === 'esc' || key === 'r') {
             self.reset();
+            self.endScreen.hide();
         } else if (key === 'enter' && self.won) {
             self.reset();
             self.won = false;
@@ -91,7 +94,8 @@ Pong.prototype.addBall = function () {
     var ball = new Ball(this, {
         color: this.ballSettings.color,
         size: this.ballSettings.size,
-        speed: this.ballSettings.speed
+        //speed: this.ballSettings.speed,
+        velocity: this.ballSettings.velocity
     });
 
     this.balls.push(ball);
@@ -160,6 +164,9 @@ Pong.prototype.restart = function (addBall, dir) {
 
     this.hits = 0;
     this.bounces = 0;
+    if (typeof(game.balls[0]) != "undefined") {
+        this.ballSettings.velocity = [game.balls[0].velocity.x, game.balls[0].velocity.y];
+    }
     this.resetBalls();
 
     if (addBall) {
@@ -190,7 +197,8 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor(parseOctal(color));
+    color = color.split('#')[1];
+    this.stage.setBackgroundColor(color);
     this.updateIfStill();
 };
 
@@ -214,9 +222,14 @@ Pong.prototype.setBallSize = function (size) {
     this.emit('setBallSize', size);
 };
 
-Pong.prototype.setBallSpeed = function (speed) {
+/*Pong.prototype.setBallSpeed = function (speed) {
     this.ballSettings.speed = speed;
     this.emit('setBallSpeed', speed);
+};*/
+
+Pong.prototype.setBallVelocity = function (velocity) {
+    this.ballSettings.velocity = velocity;
+    this.emit('setBallVelocity', velocity);
 };
 
 Pong.prototype.win = function (message) {
