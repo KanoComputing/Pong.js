@@ -114,18 +114,18 @@ npm install
 * `update()` - Run next frame in the gameloop
 * `updateIfStill()` - Only update if gameloop not running
 * `resize()` - Resize accordingly to wrapper size. Use for responsive implementations
-* `resetBalls([ add_one ])` - Remove all balls, add one if `true` is passed
+* `resetBalls( add_one )` - Remove all balls, add one if `true` is passed
 * `restart()` - Reset position of players and ball
 * `reset()` - Reset game (Restore start screen, scores, ..)
-* `setBackgroundColor([ string ])` - Set background color using hexa string (`#xxxxxx`)
-* `setLinesColor([ string ])` - Set lines color using hexa string (`#xxxxxx`)
-* `setTextStyle([ object ])` - Set text style attributes (E.g. `font`, `fill`, `align`)
-* `setBallColor([ string ])` - Set the color of balls currently on stage and future ones
-* `setBallSize([ number ])` - Set the size of balls currently on stage and future ones
-* `setBallSpeed([ number ])` - Set the speed of balls currently on stage and future ones
+* `setBackgroundColor( string )` - Set background color using hexa string (`#xxxxxx`)
+* `setLinesColor( string )` - Set lines color using hexa string (`#xxxxxx`)
+* `setTextStyle( object )` - Set text style attributes (E.g. `font`, `fill`, `align`)
+* `setBallColor( string )` - Set the color of balls currently on stage and future ones
+* `setBallSize( number )` - Set the size of balls currently on stage and future ones
+* `setBallSpeed( number )` - Set the speed of balls currently on stage and future ones
 * `addBall()` - Add a ball to the game
-* `on([ event ], [ callback ])` - Bind callback to a game event
-* `emit([ event ], [ params.. ])` - Emit a game event
+* `on( event , callback )` - Bind callback to a game event
+* `emit( event , [ params.. ])` - Emit a game event
 
 #### Properties
 
@@ -162,18 +162,18 @@ npm install
 
 #### Methods
 
-* `addControls([ object ])` - Add keyboard controls (E.g. `{ up: 'w', down: 's' }`)
-* `move([ number ]) - Move up (`-1`) or down (`1`) according to speed at next iteration
+* `addControls( object )` - Add keyboard controls (E.g. `{ up: 'w', down: 's' }`)
+* `move( number )` - Move up (`-1`) or down (`1`) according to speed at next iteration
 * `screenX()` - Returns screen X position
 * `screenY()` - Returns screen Y position
 * `getBoundingBox()` - Returns paddle bounding box
 * `reset()` - Reset player position
 * `addPoint()` - Increse player score
-* `setHeight([ number ])` - Set paddle height
-* `setY([ number ])` - Set player Y position
-* `setColor([ string ])` - Set paddle color using hexa string (`#xxxxxx`)
-* `on([ event ], [ callback ])` - Bind callback to a player event
-* `emit([ event ], [ params.. ])` - Emit a player event
+* `setHeight( number )` - Set paddle height
+* `setY( number )` - Set player Y position
+* `setColor( string )` - Set paddle color using hexa string (`#xxxxxx`)
+* `on( event, callback )` - Bind callback to a player event
+* `emit( event , [ params.. ])` - Emit a player event
 
 #### Events
 
@@ -194,9 +194,9 @@ npm install
 
 #### Methods
 
-* `setSize([ number ])` - Set ball radius in pixels
-* `setColor([ string ])` - Set ball color using hexa string (`#xxxxxx`)
-* `rebound([ direction ])` - Reset ball position, pointing right when `direction` is positive, left when negative
+* `setSize( number )` - Set ball radius in pixels
+* `setColor( string )` - Set ball color using hexa string (`#xxxxxx`)
+* `rebound( direction )` - Reset ball position, pointing right when `direction` is positive, left when negative
 
 #### Properties
 
