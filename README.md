@@ -126,6 +126,7 @@ npm install
 * `addBall()` - Add a ball to the game
 * `on( event , callback )` - Bind callback to a game event
 * `emit( event , [ params.. ])` - Emit a game event
+* `win( string )` - Stops game, display message to screen
 
 #### Properties
 

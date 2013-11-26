@@ -15,6 +15,7 @@ Ball = function (game, options) {
     this.y = options.y || 0;
     this.size = options.size || config.BALL_SIZE;
     this.setSpeed(options.speed || config.BALL_SPEED);
+    this.setVelocity(options.velocity || [config.BALL_SPEED, config.BALL_SPEED]);
     this.lastUpdate = new Date().getTime();
     this.removed = false;
     this.color = parseOctal(options.color) || config.BALL_COLOR;
@@ -54,6 +55,12 @@ Ball.prototype.bind = function () {
     this.game.on('setBallSpeed', function (speed) {
         if (!self.removed) {
             self.setSpeed(speed);
+        }
+    });
+
+    this.game.on('setBallVelocity', function (velocity) {
+        if(!self.removed) {
+            self.setVelocity(velocity);
         }
     });
 
@@ -135,10 +142,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, -1);
     } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
-        this.game.restart(true, 0);
+        this.game.restart(true, 1);
     } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
-        this.game.restart(true, 1);
+        this.game.restart(true, 0);
     } else {
         return false;
     }
@@ -151,13 +158,20 @@ Ball.prototype.checkPlayerCollision = function (player) {
         targetBB = player.getBoundingBox();
 
     if (BB.intersectsRect(targetBB)) {
+
         player.emit('bounce', [ this ]);
         this.game.emit('hit', this);
 
         if (player.side === 'left') {
             this.bounce(1, 0);
+            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // the ball doesn't stay in contact with the paddle
+            this.x += this.size;
         } else {
             this.bounce(-1, 0);
+            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // the ball doesn't stay in contact with the paddle
+            this.x -= (this.size / 2 + 1);
         }
 
         return true;
@@ -190,12 +204,19 @@ Ball.prototype.setSize = function (size) {
     this.refresh();
 };
 
+Ball.prototype.setVelocity = function (velocity) {
+    this.velocity = {
+        x: velocity[0],
+        y: velocity[1]
+    };
+};
+
 Ball.prototype.setSpeed = function (speed) {
     this.speed = speed;
 
     this.velocity = {
-        x: this.speed,
-        y: this.speed
+        x: speed,
+        y: speed
     };
 };
 

@@ -6,15 +6,16 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     PauseScreen = require('./PauseScreen'),
+    MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
     config = require('./config'),
     extend = require('deep-extend'),
-    parseOctal = require('./utils').parseOctal,
     keycode = require('keycode'),
     ballDefaults = {
         color: config.BALL_COLOR,
         size: config.BALL_SIZE,
-        speed: config.BALL_SPEED
+        speed: config.BALL_SPEED,
+        velocity: [ config.BALL_SPEED, config.BALL_SPEED ]
     },
     Pong;
 
@@ -29,6 +30,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.pauseScreen = new PauseScreen(this);
+    this.endScreen = new MessageScreen(this);
     this.hits = 0;
     this.totalHits = 0;
     this.bounces = 0;
@@ -44,6 +46,7 @@ Pong = function (wrapper) {
     this.resize();
     this.bind();
     this.startScreen.show();
+    this.endScreen.hide();
     this.update();
 
     wrapper.appendChild(this.renderer.view);
@@ -73,8 +76,15 @@ Pong.prototype.bind = function () {
 
         if (key === 'p') {
             self.togglePause();
-        } else if (key === ' esc' || key === 'r') {
+        } else if (key === 'esc' || key === 'r') {
             self.reset();
+            self.endScreen.hide();
+        } else if (key === 'enter' && self.won) {
+            self.reset();
+            self.won = false;
+            self.loop.play();
+            self.endScreen.hide();
+            self.start();
         }
     });
 };
@@ -83,7 +93,8 @@ Pong.prototype.addBall = function () {
     var ball = new Ball(this, {
         color: this.ballSettings.color,
         size: this.ballSettings.size,
-        speed: this.ballSettings.speed
+        speed: this.ballSettings.speed,
+        velocity: this.ballSettings.velocity
     });
 
     this.balls.push(ball);
@@ -152,6 +163,7 @@ Pong.prototype.restart = function (addBall, dir) {
 
     this.hits = 0;
     this.bounces = 0;
+
     this.resetBalls();
 
     if (addBall) {
@@ -182,7 +194,8 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor(parseOctal(color));
+    color = color.split('#')[1];
+    this.stage.setBackgroundColor(color);
     this.updateIfStill();
 };
 
@@ -209,6 +222,18 @@ Pong.prototype.setBallSize = function (size) {
 Pong.prototype.setBallSpeed = function (speed) {
     this.ballSettings.speed = speed;
     this.emit('setBallSpeed', speed);
+};
+
+Pong.prototype.setBallVelocity = function (velocity) {
+    this.ballSettings.velocity = velocity;
+    this.emit('setBallVelocity', velocity);
+};
+
+Pong.prototype.win = function (message) {
+    this.loop.stop();
+    this.endScreen.setMessage(message);
+    this.endScreen.show();
+    this.won = true;
 };
 
 module.exports = Pong;
