@@ -30,6 +30,10 @@ MessageScreen.prototype.drawMessage = function () {
     this.game.stage.addChild(this.startMsg);
 };
 
+MessageScreen.prototype.setMessage = function (message) {
+    this.startMsg.setText(message);
+};
+
 MessageScreen.prototype.setTextStyle = function (style) {
     style = extend(config.TEXT_STYLE, style);
     this.startMsg.setStyle(style);
