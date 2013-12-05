@@ -2657,6 +2657,7 @@ var pixi = require('pixi'),
     PauseScreen = require('./PauseScreen'),
     MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
+    parseOctal = require('./utils').parseOctal,
     config = require('./config'),
     extend = require('deep-extend'),
     keycode = require('keycode'),
@@ -2792,7 +2793,7 @@ Pong.prototype.refresh = function () {
 
 Pong.prototype.updateIfStill = function () {
     if (!this.loop.playing) {
-        this.update();
+        this.refresh();
     }
 };
 
@@ -2843,8 +2844,7 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    color = color.split('#')[1];
-    this.stage.setBackgroundColor(color);
+    this.stage.setBackgroundColor(parseOctal(color));
     this.updateIfStill();
 };
 
@@ -2887,7 +2887,7 @@ Pong.prototype.win = function (message) {
 
 module.exports = Pong;
 
-},{"./Arena":75,"./Ball":76,"./MessageScreen":78,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./MessageScreen":78,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
 
 var pixi = require('pixi'),
     config = require('./config'),

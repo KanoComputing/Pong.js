@@ -8,6 +8,7 @@ var pixi = require('pixi'),
     PauseScreen = require('./PauseScreen'),
     MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
+    parseOctal = require('./utils').parseOctal,
     config = require('./config'),
     extend = require('deep-extend'),
     keycode = require('keycode'),
@@ -143,7 +144,7 @@ Pong.prototype.refresh = function () {
 
 Pong.prototype.updateIfStill = function () {
     if (!this.loop.playing) {
-        this.update();
+        this.refresh();
     }
 };
 
@@ -194,8 +195,7 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    color = color.split('#')[1];
-    this.stage.setBackgroundColor(color);
+    this.stage.setBackgroundColor(parseOctal(color));
     this.updateIfStill();
 };
 
