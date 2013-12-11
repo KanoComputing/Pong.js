@@ -148,7 +148,7 @@ npm install
 * `stop` - Triggered when game is stopped
 * `pause` - Triggered when game is paused
 * `resume` - Triggered when game is resumed
-* `update` - Triggered before every gameloop iteration
+* `beforeupdate` - Triggered before every gameloop iteration
 * `update` - Triggered after every gameloop iteration
 * `resize` - Triggered when the game is resized
 * `point` - Triggered by every player when a point is scored
