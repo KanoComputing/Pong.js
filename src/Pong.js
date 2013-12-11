@@ -133,6 +133,7 @@ Pong.prototype.togglePause = function () {
 
 Pong.prototype.update = function () {
     if (this.started) {
+        this.emit('beforeupdate', this);
         this.refresh();
         this.emit('update', this);
     }
