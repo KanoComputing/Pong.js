@@ -2066,6 +2066,7 @@ Ball = function (game, options) {
     this.y = options.y || 0;
     this.size = options.size || config.BALL_SIZE;
     this.setSpeed(options.speed || config.BALL_SPEED);
+    this.setVelocity(options.velocity || [config.BALL_SPEED, config.BALL_SPEED]);
     this.lastUpdate = new Date().getTime();
     this.removed = false;
     this.color = parseOctal(options.color) || config.BALL_COLOR;
@@ -2108,6 +2109,12 @@ Ball.prototype.bind = function () {
         }
     });
 
+    this.game.on('setBallVelocity', function (velocity) {
+        if(!self.removed) {
+            self.setVelocity(velocity);
+        }
+    });
+
     this.game.on('resume', function () {
         if (!self.removed) {
             self.lastUpdate = new Date().getTime();
@@ -2133,8 +2140,8 @@ Ball.prototype.refresh = function () {
 Ball.prototype.updatePosition = function () {
     var elapsed = new Date().getTime() - this.lastUpdate;
 
-    this.x += (elapsed / 1000) * this.velocity.x;
-    this.y += (elapsed / 1000) * this.velocity.y;
+    this.x += (elapsed / 50) * this.velocity.x;
+    this.y += (elapsed / 50) * this.velocity.y;
 
     this.graphics.position.x = this.game.renderer.width / 2 + this.x;
     this.graphics.position.y = this.game.renderer.height / 2 + this.y;
@@ -2186,10 +2193,10 @@ Ball.prototype.checkWallsCollision = function () {
         this.bounce(0, -1);
     } else if (BB.origin.x < config.LINES_DISTANCE) {
         this.game.players.b.addPoint();
-        this.game.restart(true, 0);
+        this.game.restart(true, 1);
     } else if (BB.origin.x > this.game.renderer.width - config.LINES_DISTANCE) {
         this.game.players.a.addPoint();
-        this.game.restart(true, 1);
+        this.game.restart(true, 0);
     } else {
         return false;
     }
@@ -2202,13 +2209,20 @@ Ball.prototype.checkPlayerCollision = function (player) {
         targetBB = player.getBoundingBox();
 
     if (BB.intersectsRect(targetBB)) {
+
         player.emit('bounce', [ this ]);
         this.game.emit('hit', this);
 
         if (player.side === 'left') {
             this.bounce(1, 0);
+            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // the ball doesn't stay in contact with the paddle
+            this.x += this.size;
         } else {
             this.bounce(-1, 0);
+            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // the ball doesn't stay in contact with the paddle
+            this.x -= (this.size / 2 + 1);
         }
 
         return true;
@@ -2241,12 +2255,19 @@ Ball.prototype.setSize = function (size) {
     this.refresh();
 };
 
+Ball.prototype.setVelocity = function (velocity) {
+    this.velocity = {
+        x: velocity[0],
+        y: velocity[1]
+    };
+};
+
 Ball.prototype.setSpeed = function (speed) {
     this.speed = speed;
 
     this.velocity = {
-        x: this.speed,
-        y: this.speed
+        x: speed,
+        y: speed
     };
 };
 
@@ -2373,6 +2394,10 @@ MessageScreen.prototype.drawMessage = function () {
 
     this.hide();
     this.game.stage.addChild(this.startMsg);
+};
+
+MessageScreen.prototype.setMessage = function (message) {
+    this.startMsg.setText(message);
 };
 
 MessageScreen.prototype.setTextStyle = function (style) {
@@ -2630,15 +2655,17 @@ var pixi = require('pixi'),
     Arena = require('./Arena'),
     StartScreen = require('./StartScreen'),
     PauseScreen = require('./PauseScreen'),
+    MessageScreen = require('./MessageScreen'),
     EventEmitter = require('event-emitter'),
+    parseOctal = require('./utils').parseOctal,
     config = require('./config'),
     extend = require('deep-extend'),
-    parseOctal = require('./utils').parseOctal,
     keycode = require('keycode'),
     ballDefaults = {
         color: config.BALL_COLOR,
         size: config.BALL_SIZE,
-        speed: config.BALL_SPEED
+        speed: config.BALL_SPEED,
+        velocity: [ config.BALL_SPEED, config.BALL_SPEED ]
     },
     Pong;
 
@@ -2653,6 +2680,7 @@ Pong = function (wrapper) {
     this.arena = new Arena(this);
     this.startScreen = new StartScreen(this);
     this.pauseScreen = new PauseScreen(this);
+    this.endScreen = new MessageScreen(this);
     this.hits = 0;
     this.totalHits = 0;
     this.bounces = 0;
@@ -2668,6 +2696,7 @@ Pong = function (wrapper) {
     this.resize();
     this.bind();
     this.startScreen.show();
+    this.endScreen.hide();
     this.update();
 
     wrapper.appendChild(this.renderer.view);
@@ -2697,8 +2726,15 @@ Pong.prototype.bind = function () {
 
         if (key === 'p') {
             self.togglePause();
-        } else if (key === ' esc' || key === 'r') {
+        } else if (key === 'esc' || key === 'r') {
             self.reset();
+            self.endScreen.hide();
+        } else if (key === 'enter' && self.won) {
+            self.reset();
+            self.won = false;
+            self.loop.play();
+            self.endScreen.hide();
+            self.start();
         }
     });
 };
@@ -2707,7 +2743,8 @@ Pong.prototype.addBall = function () {
     var ball = new Ball(this, {
         color: this.ballSettings.color,
         size: this.ballSettings.size,
-        speed: this.ballSettings.speed
+        speed: this.ballSettings.speed,
+        velocity: this.ballSettings.velocity
     });
 
     this.balls.push(ball);
@@ -2745,6 +2782,7 @@ Pong.prototype.togglePause = function () {
 
 Pong.prototype.update = function () {
     if (this.started) {
+        this.emit('beforeupdate', this);
         this.refresh();
         this.emit('update', this);
     }
@@ -2756,7 +2794,7 @@ Pong.prototype.refresh = function () {
 
 Pong.prototype.updateIfStill = function () {
     if (!this.loop.playing) {
-        this.update();
+        this.refresh();
     }
 };
 
@@ -2776,6 +2814,7 @@ Pong.prototype.restart = function (addBall, dir) {
 
     this.hits = 0;
     this.bounces = 0;
+
     this.resetBalls();
 
     if (addBall) {
@@ -2806,7 +2845,13 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor(parseOctal(color));
+    if (this.renderer instanceof pixi.CanvasRenderer) {
+        color = color.split('#')[1];
+    } else {
+        color = parseOctal(color);
+    }
+
+    this.stage.setBackgroundColor(color);
     this.updateIfStill();
 };
 
@@ -2835,9 +2880,21 @@ Pong.prototype.setBallSpeed = function (speed) {
     this.emit('setBallSpeed', speed);
 };
 
+Pong.prototype.setBallVelocity = function (velocity) {
+    this.ballSettings.velocity = velocity;
+    this.emit('setBallVelocity', velocity);
+};
+
+Pong.prototype.win = function (message) {
+    this.loop.stop();
+    this.endScreen.setMessage(message);
+    this.endScreen.show();
+    this.won = true;
+};
+
 module.exports = Pong;
 
-},{"./Arena":75,"./Ball":76,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
+},{"./Arena":75,"./Ball":76,"./MessageScreen":78,"./PauseScreen":79,"./Player":80,"./StartScreen":83,"./config":84,"./utils":86,"deep-extend":1,"event-emitter":5,"game-loop":25,"keycode":28,"pixi":50}],82:[function(require,module,exports){
 
 var pixi = require('pixi'),
     config = require('./config'),
@@ -2956,7 +3013,7 @@ module.exports = {
     LINES_COLOR: 0xEEEEEE,
     BALL_COLOR: 0xEEEEEE,
     BALL_SIZE: 10,
-    BALL_SPEED: 300
+    BALL_SPEED: 15
 };
 },{}],85:[function(require,module,exports){
 
