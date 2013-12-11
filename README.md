@@ -10,13 +10,14 @@
 
 * [Player vs Bot »](http://kanocomputing.github.io/Pong.js/examples/player-vs-bot.html)
 * [Player vs Player »](http://kanocomputing.github.io/Pong.js/examples/player-vs-player.html)
+* [Custom colors »](http://kanocomputing.github.io/Pong.js/examples/custom-colors.html)
+* [Random colors »](http://kanocomputing.github.io/Pong.js/examples/random-colors.html)
 * [Bot vs Bot »](http://kanocomputing.github.io/Pong.js/examples/bot-vs-bot.html)
 * [Custom ball »](http://kanocomputing.github.io/Pong.js/examples/custom-ball.html)
 * [Random balls »](http://kanocomputing.github.io/Pong.js/examples/random-balls.html)
-* [Custom colors »](http://kanocomputing.github.io/Pong.js/examples/custom-colors.html)
-* [Random colors »](http://kanocomputing.github.io/Pong.js/examples/random-colors.html)
 * [Shrink player »](http://kanocomputing.github.io/Pong.js/examples/shrink-player.html)
 * [Framed »](http://kanocomputing.github.io/Pong.js/examples/framed.html)
+* [Winning Screen »](http://kanocomputing.github.io/Pong.js/examples/winning-screen.html)
 
 # Usage
 

@@ -14,5 +14,5 @@ module.exports = {
     LINES_COLOR: 0xEEEEEE,
     BALL_COLOR: 0xEEEEEE,
     BALL_SIZE: 10,
-    BALL_SPEED: 300
+    BALL_SPEED: 15
 };

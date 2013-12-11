@@ -89,8 +89,8 @@ Ball.prototype.refresh = function () {
 Ball.prototype.updatePosition = function () {
     var elapsed = new Date().getTime() - this.lastUpdate;
 
-    this.x += (elapsed / 1000) * this.velocity.x;
-    this.y += (elapsed / 1000) * this.velocity.y;
+    this.x += (elapsed / 50) * this.velocity.x;
+    this.y += (elapsed / 50) * this.velocity.y;
 
     this.graphics.position.x = this.game.renderer.width / 2 + this.x;
     this.graphics.position.y = this.game.renderer.height / 2 + this.y;
