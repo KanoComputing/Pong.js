@@ -2845,7 +2845,13 @@ Pong.prototype.resetBalls = function () {
 };
 
 Pong.prototype.setBackgroundColor = function (color) {
-    this.stage.setBackgroundColor(parseOctal(color));
+    if (this.renderer instanceof pixi.CanvasRenderer) {
+        color = color.split('#')[1];
+    } else {
+        color = parseOctal(color);
+    }
+
+    this.stage.setBackgroundColor(color);
     this.updateIfStill();
 };
 
