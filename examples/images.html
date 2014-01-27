@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pong.js - Player vs Bot</title>
+
+    <script type="text/javascript" src="pixi.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+
+    <div id="pong"></div>
+
+    <div class="panel">
+        Move with [ UP ], [ DOWN ]
+    </div>
+
+    <script type="text/javascript" src="../build/Pong.js"></script>
+
+    <script type="text/javascript">
+
+        window.onload = function () {
+            var pong = new Pong(document.getElementById('pong'));
+
+            var ballImages = [ 'assets/ball-smiley.png', 'assets/ball-sad.png', ],
+                bgImages = [ 'assets/bg-0.png', 'assets/bg-1.png', 'assets/bg-2.png' ];
+
+            function resize () {
+                var gameHeight = window.innerHeight - 40 + 'px';
+                document.getElementById('pong').style.height = gameHeight;
+
+                pong.resize();
+            }
+
+            resize();
+            window.onresize = resize;
+
+            pong.players.a.addControls({
+                'up': 'up',
+                'down': 'down'
+            });
+
+            pong.on('update', function () {
+                if (pong.players.b.y < pong.balls[0].y) {
+                    pong.players.b.move(1);
+                } else if (pong.players.b.y > pong.balls[0].y) {
+                    pong.players.b.move(-1);
+                }
+            });
+
+            pong.on('bounce', randomise);
+
+            function randomise () {
+                pong.setBallSize(Math.random() * 30 + 10);
+                pong.setBallImage(ballImages[Math.floor(Math.random() * ballImages.length)]);
+                pong.setBackgroundImage(bgImages[Math.floor(Math.random() * bgImages.length)]);
+            }
+
+            randomise();
+        };
+
+    </script>
+
+</body>
+</html>
