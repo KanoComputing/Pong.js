@@ -52,14 +52,26 @@ pong.on('update', function () {
 
 #### Installation
 
+##### Using npm + Browserify
+
 `npm install pong.js`
+
+```javascript
+var Pong = require('pong.js'),
+	pong = new Pong(document.getElementById('wrapper'));
+```
+
+#### Using Bower
+
+`bower install pong.js`
+
+```html
+<script type="text/javascript" src="bower_components/pong.js/build/Pong.js"></script>
+```
 
 #### Example
 
 ```javascript
-
-var Pong = require('pong.js'),
-	pong = new Pong(document.getElementById('wrapper'));
 
 // Add keyboard controls for player A
 pong.players.a.addControls({
