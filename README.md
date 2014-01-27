@@ -24,10 +24,9 @@
 
 # Usage
 
-### Simple Example Usage
+### Simple usage
 
 ```javascript
-
 var pong = new Pong(document.getElementById('wrapper'));
 
 // Add keyboard controls for player A
@@ -48,11 +47,9 @@ pong.on('update', function () {
 });
 ```
 
-### Browserify Example Usage
+### Installation
 
-#### Installation
-
-##### Using npm + Browserify
+#### Using npm + Browserify
 
 `npm install pong.js`
 
@@ -61,7 +58,7 @@ var Pong = require('pong.js'),
 	pong = new Pong(document.getElementById('wrapper'));
 ```
 
-#### Using Bower
+### Using Bower
 
 `bower install pong.js`
 
@@ -89,8 +86,6 @@ pong.on('update', function () {
 	}
 
 });
-
-
 
 // Use a custom image for the ball
 pong.setBallImage('./assets/ball.png');
