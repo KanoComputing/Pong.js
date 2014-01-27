@@ -4,7 +4,7 @@
 > Uses [Pixi.js](https://github.com/GoodBoyDigital/pixi.js) for rendering.
 > Available stand-alone or as npm module for [Browserify](http://browserify.org/)
 
-**Current Version:** *0.0.8*
+**Current Version:** *0.0.9*
 
 ![Screenshot](http://oi39.tinypic.com/10hr1hf.jpg)
 
