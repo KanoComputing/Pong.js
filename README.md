@@ -58,7 +58,7 @@ var Pong = require('pong.js'),
 	pong = new Pong(document.getElementById('wrapper'));
 ```
 
-### Using Bower
+#### Using Bower
 
 `bower install pong.js`
 
