@@ -117,9 +117,9 @@ npm install
 
 `npm run watch`
 
-# Docs
+# API documentation
 
-## Pong class
+## Pong instance
 
 #### Methods
 
@@ -179,7 +179,7 @@ npm install
 * `bounce` - Fired every time a ball bounces
 * `hit` - Fired every time a ball hits a player
 
-## Player class
+## Player instances
 
 #### Methods
 
@@ -211,7 +211,7 @@ npm install
 * `score` - Player score
 * `color` - Octal color string
 
-## Ball class
+## Ball instances
 
 #### Methods
 
