@@ -66,7 +66,7 @@ var Pong = require('pong.js'),
 <script type="text/javascript" src="bower_components/pong.js/build/Pong.js"></script>
 ```
 
-#### Example
+#### Usage example
 
 ```javascript
 
