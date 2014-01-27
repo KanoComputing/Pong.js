@@ -14,6 +14,7 @@ var pixi = require('pixi'),
     keycode = require('keycode'),
     ballDefaults = {
         color: config.BALL_COLOR,
+        image: null,
         size: config.BALL_SIZE,
         speed: config.BALL_SPEED,
         velocity: [ config.BALL_SPEED, config.BALL_SPEED ]
@@ -93,6 +94,7 @@ Pong.prototype.bind = function () {
 Pong.prototype.addBall = function () {
     var ball = new Ball(this, {
         color: this.ballSettings.color,
+        image: this.ballSettings.image,
         size: this.ballSettings.size,
         speed: this.ballSettings.speed,
         velocity: this.ballSettings.velocity
@@ -153,11 +155,17 @@ Pong.prototype.resize = function () {
     var width = this.wrapper.clientWidth,
         height = this.wrapper.clientHeight;
 
+    this.updateBackgroundSize();
     this.renderer.resize(width, height);
-
     this.emit('resize', width, height, this);
-
     this.renderer.render(this.stage);
+};
+
+Pong.prototype.updateBackgroundSize = function () {
+    if (this.backgroundImage) {
+        this.backgroundImage.width = this.renderer.width;
+        this.backgroundImage.height = this.renderer.height;
+    }
 };
 
 Pong.prototype.restart = function (addBall, dir) {
@@ -206,6 +214,24 @@ Pong.prototype.setBackgroundColor = function (color) {
     this.updateIfStill();
 };
 
+Pong.prototype.setBackgroundImage = function (image) {
+    if (this.backgroundImage) {
+        this.stage.removeChild(this.backgroundImage);
+    }
+
+    this.backgroundImage = pixi.Sprite.fromImage(image);
+    this.updateBackgroundSize();
+    this.stage.addChildAt(this.backgroundImage, 0);
+    var self = this;
+
+    var preload = new Image();
+    preload.src = image;
+
+    this.backgroundImage.texture.baseTexture.on('loaded', function () {
+        self.refresh();
+    });
+};
+
 Pong.prototype.setLinesColor = function (color) {
     this.emit('setLinesColor', color);
     this.updateIfStill();
@@ -219,6 +245,11 @@ Pong.prototype.setTextStyle = function (style) {
 Pong.prototype.setBallColor = function (color) {
     this.ballSettings.color = color;
     this.emit('setBallColor', color);
+};
+
+Pong.prototype.setBallImage = function (image) {
+    this.ballSettings.image = image;
+    this.emit('setBallImage', image);
 };
 
 Pong.prototype.setBallSize = function (size) {

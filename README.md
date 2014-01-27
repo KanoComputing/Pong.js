@@ -12,6 +12,7 @@
 * [Player vs Player »](http://kanocomputing.github.io/Pong.js/examples/player-vs-player.html)
 * [Custom colors »](http://kanocomputing.github.io/Pong.js/examples/custom-colors.html)
 * [Random colors »](http://kanocomputing.github.io/Pong.js/examples/random-colors.html)
+* [Custom images »](http://kanocomputing.github.io/Pong.js/examples/images.html)
 * [Bot vs Bot »](http://kanocomputing.github.io/Pong.js/examples/bot-vs-bot.html)
 * [Custom ball »](http://kanocomputing.github.io/Pong.js/examples/custom-ball.html)
 * [Random balls »](http://kanocomputing.github.io/Pong.js/examples/random-balls.html)
@@ -58,7 +59,6 @@ pong.on('update', function () {
 var Pong = require('pong.js'),
 	pong = new Pong(document.getElementById('wrapper'));
 
-
 // Add keyboard controls for player A
 pong.players.a.addControls({
 	'up': 'w',
@@ -76,6 +76,13 @@ pong.on('update', function () {
 
 });
 
+
+
+// Use a custom image for the ball
+pong.setBallImage('./assets/ball.png');
+
+// Use a background color
+pong.setBackgroundColor('#ff0000');
 ```
 
 # Development
@@ -119,9 +126,11 @@ npm install
 * `restart()` - Reset position of players and ball
 * `reset()` - Reset game (Restore start screen, scores, ..)
 * `setBackgroundColor( string )` - Set background color using hexa string (`#xxxxxx`)
+* `setBackgroundImage( string )` - Set background image asset url / relative path
 * `setLinesColor( string )` - Set lines color using hexa string (`#xxxxxx`)
 * `setTextStyle( object )` - Set text style attributes (E.g. `font`, `fill`, `align`)
 * `setBallColor( string )` - Set the color of balls currently on stage and future ones
+* `setBallImage( string )` - Set ball image asset url / relative path for all balls on stage (Recommended if 1:1 ratio assets)
 * `setBallSize( number )` - Set the size of balls currently on stage and future ones
 * `setBallSpeed( number )` - Set the speed of balls currently on stage and future ones
 * `addBall()` - Add a ball to the game
@@ -199,6 +208,7 @@ npm install
 
 * `setSize( number )` - Set ball radius in pixels
 * `setColor( string )` - Set ball color using hexa string (`#xxxxxx`)
+* `setImage( string )` - Set the ball image asset url / relative path (Recommended if 1:1 ratio assets)
 * `rebound( direction )` - Reset ball position, pointing right when `direction` is positive, left when negative
 
 #### Properties
@@ -206,3 +216,4 @@ npm install
 * `color` - Octal color string
 * `size` - Ball radius in pixels
 * `velocity` - Object containing X and Y velocity
+* `image` - Background image url / relative path

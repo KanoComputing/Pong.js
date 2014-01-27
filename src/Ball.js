@@ -21,6 +21,11 @@ Ball = function (game, options) {
     this.color = parseOctal(options.color) || config.BALL_COLOR;
 
     this.graphics = new pixi.Graphics();
+
+    if (options.image) {
+        this.setImage(options.image);
+    }
+
     this.render();
     this.bind();
 };
@@ -43,6 +48,12 @@ Ball.prototype.bind = function () {
     this.game.on('setBallColor', function (color) {
         if (!self.removed) {
             self.setColor(color);
+        }
+    });
+
+    this.game.on('setBallImage', function (image) {
+        if (!self.removed) {
+            self.setImage(image);
         }
     });
 
@@ -72,9 +83,23 @@ Ball.prototype.bind = function () {
 };
 
 Ball.prototype.render = function () {
-    this.graphics.beginFill(this.color, 1);
-    this.graphics.drawCircle(0, 0, this.size);
-    this.graphics.endFill();
+    if (this.sprite) {
+        this.graphics.removeChild(this.sprite);
+    }
+
+    if (this.image) {
+        this.sprite = pixi.Sprite.fromImage(this.image);
+        this.graphics.addChild(this.sprite);
+        this.sprite.width = this.size * 2;
+        this.sprite.position.x = - this.size;
+        this.sprite.position.y = - this.size;
+        this.sprite.height = this.size * 2;
+    } else {
+        this.graphics = new pixi.Graphics();
+        this.graphics.beginFill(this.color, 1);
+        this.graphics.drawCircle(0, 0, this.size);
+        this.graphics.endFill();
+    }
 
     this.game.stage.addChild(this.graphics);
 
@@ -82,7 +107,6 @@ Ball.prototype.render = function () {
 };
 
 Ball.prototype.refresh = function () {
-    this.graphics.clear();
     this.render();
 };
 
@@ -179,6 +203,10 @@ Ball.prototype.checkPlayerCollision = function (player) {
 };
 
 Ball.prototype.remove = function () {
+    if (this.sprite) {
+        this.graphics.removeChild(this.sprite);
+    }
+
     this.graphics.clear();
     this.removed = true;
 };
@@ -196,6 +224,11 @@ Ball.prototype.bounce = function (multiplyX, multiplyY) {
 
 Ball.prototype.setColor = function (color) {
     this.color = parseOctal(color);
+    this.refresh();
+};
+
+Ball.prototype.setImage = function (image) {
+    this.image = image;
     this.refresh();
 };
 

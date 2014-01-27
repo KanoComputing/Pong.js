@@ -1,6 +1,6 @@
 
-var config = require('./config'),
-    pixi = require('pixi'),
+var pixi = require('pixi'),
+    config = require('./config'),
     parseOctal = require('./utils').parseOctal,
     Arena;
 

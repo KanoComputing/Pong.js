@@ -70,7 +70,7 @@ Player.prototype.bind = function () {
 };
 
 Player.prototype.render = function () {
-    this.graphics.beginFill(this.color, 1);
+    this.graphics.beginFill(this.color);
     this.graphics.drawRect(0, 0, this.width, this.height);
     this.graphics.endFill();
 };
