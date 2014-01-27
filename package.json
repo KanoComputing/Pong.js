@@ -1,6 +1,6 @@
 {
   "name": "pong.js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Configurable HTML5 Pong game for the browser",
   "main": "src/Pong.js",
   "scripts": {
