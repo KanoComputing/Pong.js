@@ -25,24 +25,44 @@ app.get('/fonts/8-bit_wonder-webfont.ttf', function (req, res) {
   res.sendFile(path.join(__dirname, './examples', 'styles.css'));
 });
 
-io.on('connection', function (socket) {
-  console.log('A user has connected!')
+io.sockets.on('connection', function (socket) {
+  console.log('A user has connected!', socket.id)
+
+  socket.on('disconnect', function () {
+    console.log('A user has disconnected!', socket.id)
+  })
+
+  // Game start/reset event
   socket.on('game-start', function (data) {
     if (data.started) {
-      socket.emit('game-started')
-      console.log('The game has started.')
+      io.sockets.emit('game-started')
+      console.log('The game has started.', socket.id)
     } else {
-      socket.emit('game-ended')
-      console.log('The game has ended.')
+      io.sockets.emit('game-ended')
+      console.log('The game has ended.', socket.id)
     }
   });
 
-  socket.emit('p2-connected', {p2: 'connected'})
-    socket.on('pad-movement', function (data) {
-      socket.emit('p2-pad-update', {})
-    });
+  // Game score update event
+  socket.on('update-score', function (data) { })
 
+  // Pad position pdate event
+  socket.on('pad-movement', function (data) {
+    if (data.currentPlayer === 'player1') {
+      socket.emit('p1-pad-update', {
+        position: data.position
+      })
+    } else {
+      socket.emit('p2-pad-update', {
+        position: data.position
+      })
+    }
+  });
+
+  // Ball position update
   socket.on('ball-movement', function (data) {
-    socket.sockets.emit('ball-update', {})
+    io.sockets.emit('ball-update', {
+      position: data.position
+    })
   })
 });
