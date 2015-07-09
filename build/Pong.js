@@ -5484,32 +5484,39 @@ StartScreen.prototype.bind = function () {
     var self = this;
     window.socket = socket;
 
+    socket.on('game-started', function () {
+      self.game.start();
+      console.log('the game started');
+    })
+
+    socket.on('game-ended', function () {
+      self.game.reset();
+      console.log('the game ended');
+    });
+
     MessageScreen.prototype.bind.apply(this, arguments);
 
     this.game.on('start', function () {
-      socket.emit('game-start', {started: true})
-      socket.on('game-started', function () {
-        console.log('the game started');
-        self.hide();
-      })
+      self.hide();
     });
 
     this.game.on('reset', function () {
-      socket.emit('game-start', {started: false})
-      socket.on('game-ended', function () {
-        console.log('the game ended');
-        self.show();
-      });
+      self.show();
     });
 
     document.addEventListener('keydown', function (e) {
         var key = keycode(e.keyCode);
 
         if (key === 'enter') {
-
-            if (!self.game.loop.playing) {
-                self.game.start();
+          if (!self.game.loop.playing) {
+              socket.emit('game-start', {started: true})
+              self.game.start();
             }
+        } else {
+          if (key === 'esc') {
+            socket.emit('game-start', {started: false})
+            self.game.reset();
+          }
         }
     });
 };

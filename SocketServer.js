@@ -35,16 +35,21 @@ io.sockets.on('connection', function (socket) {
   // Game start/reset event
   socket.on('game-start', function (data) {
     if (data.started) {
-      io.sockets.emit('game-started')
+      io.emit('game-started')
       console.log('The game has started.', socket.id)
     } else {
-      io.sockets.emit('game-ended')
+      io.emit('game-ended')
       console.log('The game has ended.', socket.id)
     }
   });
 
   // Game score update event
-  socket.on('update-score', function (data) { })
+  socket.on('update-score', function (data) {
+    io.sockets.emit('update-score', {
+      player1: data.player1,
+      player2: data.player2
+    })
+  })
 
   // Pad position pdate event
   socket.on('pad-movement', function (data) {
