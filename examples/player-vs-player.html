@@ -6,11 +6,22 @@
 	<script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="../build/Pong.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 	<script type="text/javascript">
 
+		var pong;
+
 		window.onload = function () {
-			var pong = new Pong(document.getElementById('pong'));
+			pong = new Pong(document.getElementById('pong'));
 
 			function resize () {
 				var gameHeight = window.innerHeight - 40 + 'px';
@@ -38,11 +49,24 @@
 </head>
 <body>
 
-	<div id="pong"></div>
+	<div id="pong-game">
+		<div id="pong"></div>
 
-	<div class="panel">
-		Control both paddles width [ W ], [ S ] and [ UP ], [ DOWN ]
+		<div class="panel">
+			Control both paddles width [ W ], [ S ] and [ UP ], [ DOWN ]
+		</div>
 	</div>
+
+	<div id="select-player" class="jumbotron absolute-center">
+		<h1 class="welcome">Welcome to Pong</h1>
+		<h2 class="welcome-tip">Select the player you want to play with</h2>
+
+		<div class="button-container">
+			<button class="btn btn-lg btn-primary" onclick="pong.setPlayer(1)">Player 1</button>
+			<button class="btn btn-lg btn-primary" onclick="pong.setPlayer(2)">Player 2</button>
+		</div>
+	</div>
+
 
 </body>
 </html>

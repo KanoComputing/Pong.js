@@ -5345,6 +5345,20 @@ Pong.prototype.win = function (message) {
     this.won = true;
 };
 
+Pong.prototype.setPlayer = function(player) {
+    console.log('setting player to ' + player);
+    this.remote_player = player;
+
+    this.showStartScreen();
+};
+
+Pong.prototype.showStartScreen = function() {
+    document.getElementById('select-player').style.display = 'none';
+    document.getElementById('pong-game').style.display = 'block';
+};
+
+
+
 module.exports = Pong;
 
 },{"./Arena":76,"./Ball":77,"./MessageScreen":79,"./PauseScreen":80,"./Player":81,"./StartScreen":84,"./config":85,"./utils":87,"deep-extend":2,"event-emitter":6,"game-loop":26,"keycode":29,"pixi":51}],83:[function(require,module,exports){

@@ -274,4 +274,18 @@ Pong.prototype.win = function (message) {
     this.won = true;
 };
 
+Pong.prototype.setPlayer = function(player) {
+    console.log('setting player to ' + player);
+    this.remote_player = player;
+
+    this.showStartScreen();
+};
+
+Pong.prototype.showStartScreen = function() {
+    document.getElementById('select-player').style.display = 'none';
+    document.getElementById('pong-game').style.display = 'block';
+};
+
+
+
 module.exports = Pong;

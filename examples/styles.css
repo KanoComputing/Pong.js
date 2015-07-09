@@ -79,3 +79,21 @@ a.back {
 	top: 14px;
 	left: 15px;
 }
+
+.absolute-center {
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.jumbotron.absolute-center {
+	margin-bottom: 0;
+}
+
+.welcome {
+	margin-top: 10%
+}
+
+.button-container {
+	margin-top: 5%;
+}
