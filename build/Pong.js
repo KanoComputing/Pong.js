@@ -5467,8 +5467,10 @@ StartScreen.prototype.bind = function () {
         var key = keycode(e.keyCode);
 
         if (key === 'enter') {
+          if (!self.game.loop.playing) {
               socket.emit('game-start', {started: true})
               self.game.start();
+            }
         } else {
           if (key === 'esc') {
             socket.emit('game-start', {started: false})
