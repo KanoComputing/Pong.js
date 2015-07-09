@@ -5513,7 +5513,7 @@ StartScreen = function () {
     MessageScreen.apply(this, arguments);
 };
 var io = window.io;
-var socket = io('http://localhost:3000');
+var socket = io.connect();
 StartScreen.prototype = Object.create(MessageScreen.prototype);
 
 StartScreen.prototype.bind = function () {
