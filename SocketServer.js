@@ -26,18 +26,20 @@ app.get('/fonts/8-bit_wonder-webfont.ttf', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-
+  console.log('A user has connected!')
   socket.on('game-start', function (data) {
     if (data.started) {
       socket.emit('game-started')
+      console.log('The game has started.')
     } else {
       socket.emit('game-ended')
+      console.log('The game has ended.')
     }
   });
 
   socket.emit('p2-connected', {p2: 'connected'})
     socket.on('pad-movement', function (data) {
-      socket.emit('p2-pad-update', {} )
+      socket.emit('p2-pad-update', {})
     });
 
   socket.on('ball-movement', function (data) {
