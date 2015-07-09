@@ -48,12 +48,15 @@ io.sockets.on('connection', function (socket) {
 
   // Pad position pdate event
   socket.on('pad-movement', function (data) {
+    console.log('player', data.currentPlayer);
     if (data.currentPlayer === 'player1') {
-      socket.emit('p1-pad-update', {
+      console.log('p1-pad-update' + data.position);
+      io.emit('p1-pad-update', {
         position: data.position
       })
     } else {
-      socket.emit('p2-pad-update', {
+      console.log('p2-pad-update' + data.position);
+      io.emit('p2-pad-update', {
         position: data.position
       })
     }

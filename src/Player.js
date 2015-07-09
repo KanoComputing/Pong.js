@@ -81,10 +81,26 @@ Player.prototype.update = function () {
 
     if (this.keyboard.pressed.up) {
         this.move(-1);
+        //if it is player 1 consider as left pad
+        if (this.side === 'left' && window.remote_player === 1) {
+            window.socket.emit('pad-movement', { currentPlayer: 'player1', position: this.graphics.position.y});
+        }
+        else
+        {
+            window.socket.emit('pad-movement', { currentPlayer: 'player2', position: this.graphics.position.y});
+        }
     }
 
     if (this.keyboard.pressed.down) {
         this.move(1);
+        //if it is player 1 consider as left pad
+        if (this.side === 'left' && window.remote_player === 1) {
+            window.socket.emit('pad-movement', { currentPlayer: 'player1', position: this.graphics.position.y});
+        }
+        else
+        {
+            window.socket.emit('pad-movement', { currentPlayer: 'player2', position: this.graphics.position.y});
+        }
     }
 
     this.lastUpdate = new Date().getTime();
@@ -125,8 +141,16 @@ Player.prototype.screenY = function () {
 
 Player.prototype.updatePosition = function () {
   // console.log(Player)
+    console.log('position');
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
+    this.scoreDisplay.updatePosition();
+};
+
+Player.prototype.setPosition = function (position) {
+  // console.log(Player)
+    // this.graphics.position.y = position;
+    this.y = position - this.game.renderer.height / 2 + this.height / 2;
     this.scoreDisplay.updatePosition();
 };
 

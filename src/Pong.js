@@ -51,6 +51,8 @@ Pong = function (wrapper) {
     this.endScreen.hide();
     this.update();
 
+    this.setBallSpeed(0)
+
     wrapper.appendChild(this.renderer.view);
 };
 
@@ -276,8 +278,8 @@ Pong.prototype.win = function (message) {
 
 Pong.prototype.setPlayer = function(player) {
     console.log('setting player to ' + player);
-    this.remote_player = player;
-
+    window.remote_player = player;
+    this.enableSocketListener();
     this.showStartScreen();
 };
 
@@ -286,6 +288,22 @@ Pong.prototype.showStartScreen = function() {
     document.getElementById('pong-game').style.display = 'block';
 };
 
-
+Pong.prototype.enableSocketListener = function() {
+    alert('enableSocketListener');
+    var view = this;
+    //receive update on second player position
+    if (window.remote_player === 1) {
+        socket.on('p2-pad-update', function (data) {
+            console.log('receiving position from player 2', data);
+            view.players.b.setPosition(data.position);
+        });
+    }
+    else if (window.remote_player === 2) {
+        socket.on('p1-pad-update', function (data) {
+            console.log('receiving position from player 1', data);
+            view.players.a.setPosition(data.position);
+        });
+    }
+};
 
 module.exports = Pong;

@@ -4964,10 +4964,26 @@ Player.prototype.update = function () {
 
     if (this.keyboard.pressed.up) {
         this.move(-1);
+        //if it is player 1 consider as left pad
+        if (this.side === 'left' && window.remote_player === 1) {
+            window.socket.emit('pad-movement', { currentPlayer: 'player1', position: this.graphics.position.y});
+        }
+        else
+        {
+            window.socket.emit('pad-movement', { currentPlayer: 'player2', position: this.graphics.position.y});
+        }
     }
 
     if (this.keyboard.pressed.down) {
         this.move(1);
+        //if it is player 1 consider as left pad
+        if (this.side === 'left' && window.remote_player === 1) {
+            window.socket.emit('pad-movement', { currentPlayer: 'player1', position: this.graphics.position.y});
+        }
+        else
+        {
+            window.socket.emit('pad-movement', { currentPlayer: 'player2', position: this.graphics.position.y});
+        }
     }
 
     this.lastUpdate = new Date().getTime();
@@ -5008,8 +5024,16 @@ Player.prototype.screenY = function () {
 
 Player.prototype.updatePosition = function () {
   // console.log(Player)
+    console.log('position');
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
+    this.scoreDisplay.updatePosition();
+};
+
+Player.prototype.setPosition = function (position) {
+  // console.log(Player)
+    // this.graphics.position.y = position;
+    this.y = position - this.game.renderer.height / 2 + this.height / 2;
     this.scoreDisplay.updatePosition();
 };
 
@@ -5121,6 +5145,8 @@ Pong = function (wrapper) {
     this.startScreen.show();
     this.endScreen.hide();
     this.update();
+
+    this.setBallSpeed(0)
 
     wrapper.appendChild(this.renderer.view);
 };
@@ -5347,8 +5373,8 @@ Pong.prototype.win = function (message) {
 
 Pong.prototype.setPlayer = function(player) {
     console.log('setting player to ' + player);
-    this.remote_player = player;
-
+    window.remote_player = player;
+    this.enableSocketListener();
     this.showStartScreen();
 };
 
@@ -5357,10 +5383,25 @@ Pong.prototype.showStartScreen = function() {
     document.getElementById('pong-game').style.display = 'block';
 };
 
-
+Pong.prototype.enableSocketListener = function() {
+    alert('enableSocketListener');
+    var view = this;
+    //receive update on second player position
+    if (window.remote_player === 1) {
+        socket.on('p2-pad-update', function (data) {
+            console.log('receiving position from player 2', data);
+            view.players.b.setPosition(data.position);
+        });
+    }
+    else if (window.remote_player === 2) {
+        socket.on('p1-pad-update', function (data) {
+            console.log('receiving position from player 1', data);
+            view.players.a.setPosition(data.position);
+        });
+    }
+};
 
 module.exports = Pong;
-
 },{"./Arena":76,"./Ball":77,"./MessageScreen":79,"./PauseScreen":80,"./Player":81,"./StartScreen":84,"./config":85,"./utils":87,"deep-extend":2,"event-emitter":6,"game-loop":26,"keycode":29,"pixi":51}],83:[function(require,module,exports){
 
 var pixi = require('pixi'),
@@ -5441,7 +5482,7 @@ StartScreen.prototype = Object.create(MessageScreen.prototype);
 
 StartScreen.prototype.bind = function () {
     var self = this;
-    // var socket = window.socket
+    window.socket = socket;
 
     MessageScreen.prototype.bind.apply(this, arguments);
 

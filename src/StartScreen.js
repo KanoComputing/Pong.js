@@ -14,7 +14,7 @@ StartScreen.prototype = Object.create(MessageScreen.prototype);
 
 StartScreen.prototype.bind = function () {
     var self = this;
-    // var socket = window.socket
+    window.socket = socket;
 
     MessageScreen.prototype.bind.apply(this, arguments);
 
