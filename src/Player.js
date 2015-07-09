@@ -53,6 +53,7 @@ Player.prototype.bind = function () {
     var self = this;
 
     this.game.on('update', function () {
+      // console.log('updated')
         self.update();
     });
 
@@ -123,6 +124,7 @@ Player.prototype.screenY = function () {
 };
 
 Player.prototype.updatePosition = function () {
+  // console.log(Player)
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
     this.scoreDisplay.updatePosition();

@@ -3,10 +3,13 @@ var keycode = require('keycode'),
     MessageScreen = require('./MessageScreen'),
     StartScreen,
 
+
 StartScreen = function () {
     this.message = 'PRESS ENTER';
     MessageScreen.apply(this, arguments);
 };
+var io = window.io;
+var socket = io('http://localhost:3000');
 
 StartScreen.prototype = Object.create(MessageScreen.prototype);
 
@@ -16,17 +19,24 @@ StartScreen.prototype.bind = function () {
     MessageScreen.prototype.bind.apply(this, arguments);
 
     this.game.on('start', function () {
-        self.hide();
-    });
+      socket.emit('game-start', {started: 'true'})
+        socket.on('game-started', function () {
+          self.hide();
+        })
+      });
 
     this.game.on('reset', function () {
+      socket.emit('game-start', {started: 'false'})
+      socket.on('game-ended', function () {
         self.show();
+      });
     });
 
     document.addEventListener('keydown', function (e) {
         var key = keycode(e.keyCode);
 
         if (key === 'enter') {
+
             if (!self.game.loop.playing) {
                 self.game.start();
             }
