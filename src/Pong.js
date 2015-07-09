@@ -302,6 +302,23 @@ Pong.prototype.enableSocketListener = function() {
             console.log('receiving position from player 1', data);
             view.players.a.setPosition(data.position);
         });
+
+        socket.on('ball-update', function (data) {
+            console.log('receiving ball position', data);
+            view.balls[0].setPosition(data.position);
+        });
+
+        socket.on('p2-update-score', function (data) {
+            console.log('receiving score', data);
+            view.players.a.score = data.player1;
+            view.players.b.score = data.player2;
+            view.players.a.scoreDisplay.update();
+            view.players.b.scoreDisplay.update();
+        });
+
+
+
+
     }
 };
 

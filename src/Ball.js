@@ -111,13 +111,33 @@ Ball.prototype.refresh = function () {
 };
 
 Ball.prototype.updatePosition = function () {
-    var elapsed = new Date().getTime() - this.lastUpdate;
 
-    this.x += (elapsed / 50) * this.velocity.x;
-    this.y += (elapsed / 50) * this.velocity.y;
+    if (window.remote_player === 1) {
+        var elapsed = new Date().getTime() - this.lastUpdate,
+        position = {};
 
-    this.graphics.position.x = this.game.renderer.width / 2 + this.x;
-    this.graphics.position.y = this.game.renderer.height / 2 + this.y;
+
+        this.x += (elapsed / 50) * this.velocity.x;
+        this.y += (elapsed / 50) * this.velocity.y;
+
+        this.graphics.position.x = this.game.renderer.width / 2 + this.x;
+        this.graphics.position.y = this.game.renderer.height / 2 + this.y;
+
+        position.x = this.x;
+        position.y = this.y;
+        position.graph_x = this.graphics.position.x;
+        position.graph_y = this.graphics.position.y;
+
+        window.socket.emit('ball-movement', { position: position});
+    }
+};
+
+Ball.prototype.setPosition = function (position) {
+    this.x = position.x;
+    this.y = position.y;
+
+    this.graphics.position.x = position.graph_x;
+    this.graphics.position.y = position.graph_y;
 };
 
 Ball.prototype.update = function () {

@@ -5,6 +5,15 @@ var path = require('path');
 
 server.listen(3000);
 
+// Add headers
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  next();
+});
+
 app.get('/', function(req, res){
   res.sendFile(path.join(__dirname, './examples', 'player-vs-player.html'));
 });
@@ -45,7 +54,7 @@ io.sockets.on('connection', function (socket) {
 
   // Game score update event
   socket.on('update-score', function (data) {
-    io.sockets.emit('update-score', {
+    io.emit('p2-update-score', {
       player1: data.player1,
       player2: data.player2
     })
@@ -53,14 +62,11 @@ io.sockets.on('connection', function (socket) {
 
   // Pad position pdate event
   socket.on('pad-movement', function (data) {
-    console.log('player', data.currentPlayer);
     if (data.currentPlayer === 'player1') {
-      console.log('p1-pad-update' + data.position);
       io.emit('p1-pad-update', {
         position: data.position
       })
     } else {
-      console.log('p2-pad-update' + data.position);
       io.emit('p2-pad-update', {
         position: data.position
       })
@@ -69,7 +75,7 @@ io.sockets.on('connection', function (socket) {
 
   // Ball position update
   socket.on('ball-movement', function (data) {
-    io.sockets.emit('ball-update', {
+    io.emit('ball-update', {
       position: data.position
     })
   })

@@ -4549,13 +4549,33 @@ Ball.prototype.refresh = function () {
 };
 
 Ball.prototype.updatePosition = function () {
-    var elapsed = new Date().getTime() - this.lastUpdate;
 
-    this.x += (elapsed / 50) * this.velocity.x;
-    this.y += (elapsed / 50) * this.velocity.y;
+    if (window.remote_player === 1) {
+        var elapsed = new Date().getTime() - this.lastUpdate,
+        position = {};
 
-    this.graphics.position.x = this.game.renderer.width / 2 + this.x;
-    this.graphics.position.y = this.game.renderer.height / 2 + this.y;
+
+        this.x += (elapsed / 50) * this.velocity.x;
+        this.y += (elapsed / 50) * this.velocity.y;
+
+        this.graphics.position.x = this.game.renderer.width / 2 + this.x;
+        this.graphics.position.y = this.game.renderer.height / 2 + this.y;
+
+        position.x = this.x;
+        position.y = this.y;
+        position.graph_x = this.graphics.position.x;
+        position.graph_y = this.graphics.position.y;
+
+        window.socket.emit('ball-movement', { position: position});
+    }
+};
+
+Ball.prototype.setPosition = function (position) {
+    this.x = position.x;
+    this.y = position.y;
+
+    this.graphics.position.x = position.graph_x;
+    this.graphics.position.y = position.graph_y;
 };
 
 Ball.prototype.update = function () {
@@ -5397,6 +5417,23 @@ Pong.prototype.enableSocketListener = function() {
             console.log('receiving position from player 1', data);
             view.players.a.setPosition(data.position);
         });
+
+        socket.on('ball-update', function (data) {
+            console.log('receiving ball position', data);
+            view.balls[0].setPosition(data.position);
+        });
+
+        socket.on('p2-update-score', function (data) {
+            console.log('receiving score', data);
+            view.players.a.score = data.player1;
+            view.players.b.score = data.player2;
+            view.players.a.scoreDisplay.update();
+            view.players.b.scoreDisplay.update();
+        });
+
+
+
+
     }
 };
 
