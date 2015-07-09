@@ -289,7 +289,6 @@ Pong.prototype.showStartScreen = function() {
 };
 
 Pong.prototype.enableSocketListener = function() {
-    alert('enableSocketListener');
     var view = this;
     //receive update on second player position
     if (window.remote_player === 1) {
