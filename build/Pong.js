@@ -4956,7 +4956,6 @@ Player.prototype.bind = function () {
     var self = this;
 
     this.game.on('update', function () {
-      // console.log('updated')
         self.update();
     });
 
@@ -5043,16 +5042,12 @@ Player.prototype.screenY = function () {
 };
 
 Player.prototype.updatePosition = function () {
-  // console.log(Player)
-    console.log('position');
     this.graphics.position.x = this.screenX();
     this.graphics.position.y = this.screenY();
     this.scoreDisplay.updatePosition();
 };
 
 Player.prototype.setPosition = function (position) {
-  // console.log(Player)
-    // this.graphics.position.y = position;
     this.y = position - this.game.renderer.height / 2 + this.height / 2;
     this.scoreDisplay.updatePosition();
 };
@@ -5081,9 +5076,11 @@ Player.prototype.reset = function () {
 };
 
 Player.prototype.addPoint = function () {
-    this.score += 1;
-    this.emit('point', this.score);
-    this.game.emit('point', this);
+    if (window.remote_player === 1) { 
+        this.score += 1;
+        this.emit('point', this.score);
+        this.game.emit('point', this);
+    }
 };
 
 Player.prototype.refresh = function () {
@@ -5408,23 +5405,19 @@ Pong.prototype.enableSocketListener = function() {
     //receive update on second player position
     if (window.remote_player === 1) {
         socket.on('p2-pad-update', function (data) {
-            console.log('receiving position from player 2', data);
             view.players.b.setPosition(data.position);
         });
     }
     else if (window.remote_player === 2) {
         socket.on('p1-pad-update', function (data) {
-            console.log('receiving position from player 1', data);
             view.players.a.setPosition(data.position);
         });
 
         socket.on('ball-update', function (data) {
-            console.log('receiving ball position', data);
             view.balls[0].setPosition(data.position);
         });
 
         socket.on('p2-update-score', function (data) {
-            console.log('receiving score', data);
             view.players.a.score = data.player1;
             view.players.b.score = data.player2;
             view.players.a.scoreDisplay.update();

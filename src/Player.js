@@ -173,9 +173,11 @@ Player.prototype.reset = function () {
 };
 
 Player.prototype.addPoint = function () {
-    this.score += 1;
-    this.emit('point', this.score);
-    this.game.emit('point', this);
+    if (window.remote_player === 1) { 
+        this.score += 1;
+        this.emit('point', this.score);
+        this.game.emit('point', this);
+    }
 };
 
 Player.prototype.refresh = function () {
