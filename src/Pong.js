@@ -293,23 +293,19 @@ Pong.prototype.enableSocketListener = function() {
     //receive update on second player position
     if (window.remote_player === 1) {
         socket.on('p2-pad-update', function (data) {
-            console.log('receiving position from player 2', data);
             view.players.b.setPosition(data.position);
         });
     }
     else if (window.remote_player === 2) {
         socket.on('p1-pad-update', function (data) {
-            console.log('receiving position from player 1', data);
             view.players.a.setPosition(data.position);
         });
 
         socket.on('ball-update', function (data) {
-            console.log('receiving ball position', data);
             view.balls[0].setPosition(data.position);
         });
 
         socket.on('p2-update-score', function (data) {
-            console.log('receiving score', data);
             view.players.a.score = data.player1;
             view.players.b.score = data.player2;
             view.players.a.scoreDisplay.update();
