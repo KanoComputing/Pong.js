@@ -1,5 +1,5 @@
 
-var pixi = require('pixi'),
+var pixi = require('pixi.js'),
     config = require('./config'),
     extend = require('deep-extend'),
     ScoreDisplay;
@@ -24,7 +24,7 @@ ScoreDisplay.prototype.bind = function () {
 
 ScoreDisplay.prototype.setTextStyle = function (style) {
     style = extend(config.TEXT_STYLE, style);
-    this.text.setStyle(style);
+    this.text.style = style;
 };
 
 ScoreDisplay.prototype.render = function () {
@@ -51,7 +51,7 @@ ScoreDisplay.prototype.updatePosition = function () {
 };
 
 ScoreDisplay.prototype.update = function () {
-    this.text.setText(this.player.score + '');
+    this.text = this.player.score + '';
 };
 
 ScoreDisplay.prototype.resize = function () {

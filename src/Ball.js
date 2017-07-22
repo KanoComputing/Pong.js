@@ -1,5 +1,5 @@
- 
-var pixi = require('pixi'),
+
+var pixi = require('pixi.js'),
     geometry = require('geometry'),
     config = require('./config'),
     parseOctal = require('./utils').parseOctal,
@@ -188,12 +188,12 @@ Ball.prototype.checkPlayerCollision = function (player) {
 
         if (player.side === 'left') {
             this.bounce(1, 0);
-            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // Move ball away from paddle so in the incidence that the ball changes size,
             // the ball doesn't stay in contact with the paddle
             this.x += this.size;
         } else {
             this.bounce(-1, 0);
-            // Move ball away from paddle so in the incidence that the ball changes size, 
+            // Move ball away from paddle so in the incidence that the ball changes size,
             // the ball doesn't stay in contact with the paddle
             this.x -= (this.size / 2 + 1);
         }

@@ -1,7 +1,7 @@
 
 var config = require('./config'),
     extend = require('deep-extend'),
-    pixi = require('pixi'),
+    pixi = require('pixi.js'),
     MessageScreen;
 
 MessageScreen = function (game) {
@@ -31,12 +31,12 @@ MessageScreen.prototype.drawMessage = function () {
 };
 
 MessageScreen.prototype.setMessage = function (message) {
-    this.startMsg.setText(message);
+    this.startMsg.text = message;
 };
 
 MessageScreen.prototype.setTextStyle = function (style) {
     style = extend(config.TEXT_STYLE, style);
-    this.startMsg.setStyle(style);
+    this.startMsg.style = style;
 };
 
 MessageScreen.prototype.resize = function () {
