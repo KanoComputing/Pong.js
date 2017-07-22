@@ -1,5 +1,5 @@
 
-var pixi = require('pixi'),
+var pixi = require('pixi.js'),
     config = require('./config'),
     parseOctal = require('./utils').parseOctal,
     Arena;

@@ -1,5 +1,5 @@
 
-var pixi = require('pixi'),
+var pixi = require('pixi.js'),
     Loop = require('game-loop'),
     Player = require('./Player'),
     Ball = require('./Ball'),
@@ -25,7 +25,7 @@ Pong = function (wrapper) {
     EventEmitter.apply(this);
 
     this.wrapper = wrapper;
-    this.stage = new pixi.Stage(config.BG_COLOR);
+    this.stage = new pixi.Application(config.BG_COLOR).stage;
     this.renderer = pixi.autoDetectRenderer();
     this.loop = new Loop();
     this.balls = [];
